@@ -1,19 +1,24 @@
-import { Grid, Text, Button, Input } from "../elements";
+import { Grid, Text } from "../elements";
 import { Route, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import "../App.css";
+import "./App.css";
+
+import Header from "../components/Header";
+import Layout from "../components/Layout";
+
 import PostList from "../pages/PostList";
 import PostWrite from "../pages/PostWrite";
-import Header from "../elements/Header";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 
 function App() {
   const history = useHistory();
   return (
     <div className="App">
       <Header />
-      <Grid bg="white" width="700px" margin="auto">
-        <Route path="/" exact>
-          <PostList />
+      <Layout>
+        <Grid bg="white" width="700px" margin="30px auto" padding="16px">
+          <Route path="/" exact component={PostList} />
           <Write
             onClick={() => {
               history.push("/PostWrite");
@@ -21,11 +26,11 @@ function App() {
           >
             +
           </Write>
-        </Route>
-        <Route path="/PostWrite">
-          <PostWrite />
-        </Route>
-      </Grid>
+          <Route path="/login" exact component={Login} />
+          <Route path="/signup" exact component={Signup} />
+          <Route path="/PostWrite" exact component={PostWrite} />
+        </Grid>
+      </Layout>
     </div>
   );
 }
