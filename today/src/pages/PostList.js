@@ -5,11 +5,7 @@ import Post from "../components/Post";
 const PostList = () => {
   return (
     <>
-      <Grid>
-        <Text>여기는 포스트 리스트 즉 메인페이지</Text>
-        <Post />
-        <Button>포스트 작성</Button>
-      </Grid>
+      <Post />
     </>
   );
 };
