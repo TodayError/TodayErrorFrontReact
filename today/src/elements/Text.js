@@ -10,7 +10,7 @@ const Text = (props) => {
 Text.defaultProps = {
   children: null,
   bold: false,
-  color: "#222831",
+  color: "#FEFEFE",
   size: "14px",
   margin: false,
   fontFamily: false,
