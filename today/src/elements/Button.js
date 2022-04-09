@@ -12,6 +12,7 @@ const Button = (props) => {
     padding,
     font,
     border,
+    borderRadius,
   } = props;
 
   if (is_float) {
@@ -28,6 +29,7 @@ const Button = (props) => {
     padding: padding,
     font,
     border,
+    borderRadius,
   };
 
   return (
@@ -49,6 +51,7 @@ Button.defaultProps = {
   padding: "12px 0px",
   font: "inherit",
   border: false,
+  borderRadius: false,
 };
 
 const ElButton = styled.button`
@@ -58,16 +61,17 @@ const ElButton = styled.button`
   border: 1px solid black
   padding: ${(props) => props.padding};
   box-sizing: border-box;
-  border: none;
   padding: ${(props) => props.padding};
   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
+  font-family: "DungGeunMo";
+  border-radius: 10px;
 `;
 
 const FloatButton = styled.button`
   width: 50px;
   height: 50px;
-  background-color: #3a405a;
-  color: #f9dec9;
+  background-color: #adb5bd;
+  color: black;
   box-sizing: border-box;
   font-size: 36px;
   font-weight: 800;
@@ -76,8 +80,9 @@ const FloatButton = styled.button`
   right: 16px;
   text-align: center;
   vertical-align: middle;
-  border: none;
   border-radius: 50px;
+  font-family: "DungGeunMo";
+  border-radius: 10px;
 `;
 
 export default Button;
