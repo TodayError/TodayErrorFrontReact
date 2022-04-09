@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Text, Button, Image, Input } from "../elements";
-import Upload from "../Shared/Upload";
+import Upload from "../shared/Upload";
 
 const PostWrite = () => {
   return (
