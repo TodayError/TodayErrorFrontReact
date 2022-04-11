@@ -1,12 +1,22 @@
 import React from "react";
-import { Grid, Text, Button } from "../elements";
-import Layout from "../components/Layout";
+import { useSelector, useDispatch } from "react-redux";
+import { actionCreators as postAcions } from "../redux/modules/post";
+
 import Post from "../components/Post";
 
-const PostList = () => {
+const PostList = (props) => {
+  const dispatch = useDispatch();
+  const post_list = useSelector((state) => state.post.list);
+  console.log(post_list);
+
+  React.useEffect(() => {
+    dispatch(postAcions.getPostDB());
+  }, []);
   return (
     <>
-      <Post />
+      {post_list.map((p, ix) => {
+        return <Post key={ix} {...p} ix={ix} />;
+      })}
     </>
   );
 };

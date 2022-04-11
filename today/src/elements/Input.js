@@ -13,6 +13,7 @@ const Input = (props) => {
     value,
     is_submit,
     onSubmit,
+    margin,
   } = props;
 
   if (multiLine) {
@@ -24,6 +25,7 @@ const Input = (props) => {
           rows={10}
           placeholder={placeholder}
           onChange={_onChange}
+          margin={margin}
         />
       </Grid>
     );
@@ -35,6 +37,7 @@ const Input = (props) => {
         {label && <p margin="0px">{label}</p>}
         {is_submit ? (
           <ElInput
+            margin={margin}
             type={type}
             placeholder={placeholder}
             onChange={_onChange}
@@ -60,6 +63,7 @@ Input.defaultProps = {
   type: "text",
   value: "",
   is_submit: false,
+  margin: false,
   onSubmit: () => {},
   _onChange: () => {},
 };
@@ -70,6 +74,7 @@ const ElTextArea = styled.textarea`
   width: 100%;
   padding: 12px 4px;
   box-sizing: border-box;
+  margin-bottom: 10px;
 `;
 
 const ElInput = styled.input`
@@ -78,6 +83,7 @@ const ElInput = styled.input`
   width: 100%;
   padding: 12px 4px;
   box-sizing: border-box;
+  margin-bottom: 10px;
 `;
 
 export default Input;

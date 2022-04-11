@@ -1,41 +1,47 @@
 import React from "react";
 import { Grid, Image, Text, Button } from "../elements";
+import { useHistory } from "react-router-dom";
 
 const Post = (props) => {
+  const history = useHistory();
   return (
     <>
-      <Grid>
+      <div
+        style={{ backgroundColor: "#ca6702", marginTop: "30px" }}
+        onClick={() => {
+          history.push("/PostDetail/" + props.ix);
+        }}
+      >
         <Grid is_flex width="auto">
           <Text bold color="black" margin="16px">
-            {props.user_name}
+            {props.title}
           </Text>
           <Grid is_flex width="auto">
             <Text bold color="black" margin="16px">
-              {props.insert_dt}
+              {props.category}
+            </Text>
+            <Text bold color="black" margin="16px">
+              {props.createdAt}
             </Text>
           </Grid>
         </Grid>
         <Grid>
-          <Image shape="rectangle" src={props.image_url} />
+          <Image shape="rectangle" src={props.imageUrl} />
         </Grid>
-        <Grid is_flex width="auto">
-          <Text color="black" margin="16px">
-            {props.complited}
-          </Text>
-        </Grid>
-      </Grid>
+      </div>
     </>
   );
 };
 
 Post.defaultProps = {
-  user_name: "coooooodinnngg",
-  image_url:
+  nickname: "coooooodinnngg",
+  title: "확장자명을 안적어서 생긴 오류입니다.",
+  category: "리액트",
+  createdAt: "2021-02-27 10:00:00",
+  imageUrl:
     "https://velog.velcdn.com/images/gagyeong/post/d1481a6f-0583-4610-b253-4a9c6efc03cf/image.png",
-  contents: "확장자명을 안적어서 생긴 오류입니다. 저처럼 덤벙대지 마세요!",
-  insert_dt: "2021-02-27 10:00:00",
-  complited: "해결완료",
-  is_me: false,
+  complited: false,
+  postId: "1",
 };
 
 export default Post;
