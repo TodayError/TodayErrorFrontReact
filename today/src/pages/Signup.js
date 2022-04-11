@@ -13,17 +13,16 @@ const Signup = (props) => {
   const [pwd_check, setPwdCheck] = React.useState("");
 
   const dupCheck = (id) => {
+    if (!nicknameCheck(id)) {
+      window.alert("닉네임이 형식에 맞지 않습니다. 한글/숫자 포함 3-10자");
+      return;
+    }
     dispatch(userActions.__checkId(id));
   };
 
   const signup = () => {
     if (id === "" || pwd === "") {
       window.alert("닉네임, 패스워드를 모두 입력해주세요!");
-      return;
-    }
-
-    if (!nicknameCheck(id)) {
-      window.alert("닉네임 형식이 맞지 않습니다!");
       return;
     }
 
@@ -37,7 +36,7 @@ const Signup = (props) => {
       return;
     }
 
-    // dispatch(userActions.signupFB(id, pwd, user_name));
+    dispatch(userActions.__signup(id, pwd, pwd_check));
   };
   return (
     <React.Fragment>
@@ -55,7 +54,7 @@ const Signup = (props) => {
           <Grid is_flex>
             <Input
               label="닉네임"
-              placeholder="닉네임을 입력해주세요.(3자이상 10자 이내)"
+              placeholder="닉네임을 입력해주세요.(3자이상 10자 이내 한글, 숫자)"
               _onChange={(e) => {
                 setId(e.target.value);
               }}

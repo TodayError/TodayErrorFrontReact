@@ -3,6 +3,7 @@ import styled from "styled-components";
 // import Permit from "../shared/Permit";
 
 import { Grid, Text, Button } from "../elements";
+import { Link } from "react-router-dom";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
 
 // import { getCookie, deleteCookie } from "../shared/Cookie";
@@ -10,9 +11,7 @@ import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined"
 import { useSelector, useDispatch } from "react-redux";
 // import { actionCreators as userActions } from "../redux/modules/user";
 
-// import { apiKey } from "../shared/firebase";
-// import { history } from "../redux/configureStore";
-
+import { history } from "../redux/configureStore";
 // import NotiBadge from "./NotiBadge";
 
 const Header = (props) => {
@@ -86,31 +85,53 @@ const Header = (props) => {
   return (
     <>
       <Grid is_flex>
-        <hr />
-        <Grid padding="30px 4px" is_flex>
-          <Text margin="0px" size="50px" bold>
+        <hr style={{ margin: "5px 0px" }} />
+        <Grid padding="20px 4px" is_flex>
+          <Text margin="0px" size="40px" bold>
             항해 통신
           </Text>
         </Grid>
-        <Button margin="0px 2px" width="30%" text="로그인"></Button>
+        <Menu to={"/post/React"}>React</Menu>
+        <Menu to={"/post/Spring"}>Spring</Menu>
+        <Menu to={"/post/Nodejs"}>Node.js</Menu>
         <Button
+          style={{ cursor: "pointer" }}
+          margin="0px 2px"
+          width="30%"
+          text="로그인"
+          _onClick={() => {
+            history.push("/login");
+          }}
+        ></Button>
+        <Button
+          style={{ cursor: "pointer" }}
           margin="0px 2px"
           width="30%"
           text="회원가입"
-          // _onClick={() => {
-          //   history.push("/signup");
-          // }}
+          _onClick={() => {
+            history.push("/signup");
+          }}
         ></Button>
       </Grid>
       <hr />
       <Grid margin="5px auto">
-        <Text color="yellow" size="60px" margin="20px 0px" center>
+        <Text color="yellow" size="60px" margin="20px 0px">
           [오늘의 에러]
         </Text>
       </Grid>
     </>
   );
 };
+
+const Menu = styled(Link)`
+  font-size: 30px;
+  color: white;
+  box-sizing: border-box;
+  display: block;
+  padding: 8px 8px;
+  margin: 0px 20px;
+  text-align: center;
+`;
 
 Header.defaultProps = {};
 

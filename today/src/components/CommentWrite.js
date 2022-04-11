@@ -9,7 +9,7 @@ const CommentWrite = (props) => {
   const dispatch = useDispatch();
   const [comment_text, setCommentText] = React.useState();
 
-  const { post_id } = props;
+  const { postId } = props;
   const onChange = (e) => {
     setCommentText(e.target.value);
   };
@@ -26,8 +26,9 @@ const CommentWrite = (props) => {
           placeholder="댓글내용을 입력해 주세요 :)"
           _onChange={onChange}
           value={comment_text}
-          onSubmit={write}
-          is_submit //value를 넣어주는 이유는, 작성버튼 누르면 텍스트를 인풋창에서 날려버리기 위함
+          onSubmit={write} //value를 넣어주는 이유는, 작성버튼 누르면 텍스트를 인풋창에서 날려버리기 위함
+          is_submit
+          multiLine
         />
         <Button width="50px" margin="0px 2px 0px 2px" _onClick={write}>
           작성

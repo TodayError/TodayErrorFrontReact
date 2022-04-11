@@ -13,6 +13,9 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import PostDetail from "../pages/PostDetail";
 
+import CommentList from "../components/CommentList";
+import CommentWrite from "../components/CommentWrite";
+
 function App() {
   const history = useHistory();
   return (
@@ -21,6 +24,8 @@ function App() {
       <Layout>
         <Grid bg="white" width="700px" margin="30px auto" padding="16px">
           <Route path="/" exact component={PostList} />
+          <CommentWrite />
+          <CommentList />
           <Write
             onClick={() => {
               history.push("/PostWrite");
