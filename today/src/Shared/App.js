@@ -1,4 +1,4 @@
-import { Grid, Text } from "../elements";
+import { Grid } from "../elements";
 import { Route, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import "./App.css";
@@ -8,8 +8,10 @@ import Layout from "../components/Layout";
 
 import PostList from "../pages/PostList";
 import PostWrite from "../pages/PostWrite";
+import PostModify from "../pages/PostModify";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import PostDetail from "../pages/PostDetail";
 
 function App() {
   const history = useHistory();
@@ -29,6 +31,8 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/PostWrite" exact component={PostWrite} />
+          <Route path="/PostDetail/:index" exact component={PostDetail} />
+          <Route path="/PostModify/:index" exact component={PostModify} />
         </Grid>
       </Layout>
     </div>
