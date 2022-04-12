@@ -48,7 +48,10 @@ const RectangleInner = styled.div`
   padding-top: 75%;
   overflow: hidden;
   background-image: url("${(props) => props.src}");
-  background-size: cover;
+  /* background-size: cover; */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const ImageCircle = styled.div`

@@ -41,12 +41,12 @@ const PostModify = (props) => {
         <Text margin="0px" size="24px" bold color="black">
           미리보기
         </Text>
-        <Image shape="rectangle" />
+        <Image shape="rectangle" src={post_list[index].imageUrl} />
       </Grid>
 
       <Grid padding="16px">
         <InputStyle defaultValue={post_list[index].title} />
-        <TextStyle label="게시글 내용" placeholder="게시글 작성" />
+        <TextStyle defaultValue={post_list[index].content} />
       </Grid>
       <Grid center>
         <Button text="수정 완료" margin="0px 2px" width="30%" />

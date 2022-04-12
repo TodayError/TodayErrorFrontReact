@@ -15,7 +15,7 @@ const CommentWrite = (props) => {
   };
 
   const write = () => {
-    dispatch(commentActions.addCommentFB(post_id, comment_text));
+    dispatch(commentActions.addCommentFB(postId, comment_text));
     setCommentText(""); //작성 누르면 인풋창 value 날리기
   };
 

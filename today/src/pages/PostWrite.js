@@ -1,19 +1,32 @@
 import React from "react";
 import { Grid, Text, Button, Image, Input } from "../elements";
 import styled from "styled-components";
-import Upload from "../shared/Upload";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { actionCreators } from "../redux/modules/post";
-import { Checkbox } from "@material-ui/core";
 
 const PostWrite = (props) => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const preview = useSelector((state) => state.post.preview);
+  console.log(preview);
   const [contents, setContents] = React.useState("");
   const [title, setTitle] = React.useState("");
-  const fileInput = React.useRef();
-  const chageContents = (e) => {
+  const [completed, setCompleted] = React.useState(false);
+  const [category, setCategory] = React.useState("React");
+  const [imgBase64, setImgBase64] = React.useState([]);
+  const [file, setFile] = React.useState([]);
+
+  const changeColor = () => {
+    setCompleted(!completed);
+    console.log(completed);
+  };
+  const changeLang = (e) => {
+    setCategory(e.target.value);
+    console.log(e.target.value);
+  };
+  const changeContents = (e) => {
     setContents(e.target.value);
     console.log(e.target.value);
   };
@@ -21,27 +34,69 @@ const PostWrite = (props) => {
     setTitle(e.target.value);
     console.log(e.target.value);
   };
-  // const selectFile = (e) => {
-  //   //const file = is_edit? "http://3.35.233.188/"+_post.thumbnail:fileInput.current.files[0];
-  //   const file = fileInput.current.files[0];
-  //   const reader = new FileReader();
 
-  //   console.log(file);
-  //   reader.readAsDataURL(file);
-
-  //   reader.onloadend = () => {
-  //     dispatch(actionCreators.setPreview(reader.result));
-  //   };
-  // };
-  const dispatch = useDispatch();
   const addPost = () => {
-    if (title == "" || contents == "") {
+    if (title == "" || contents == "" || category == "" || file == null) {
       window.alert("게시물을 다 넣어주세요!");
       return;
     }
-    dispatch(actionCreators.addPostDB({ title: title, content: contents }));
-    // history.push("/");
+    dispatch(
+      actionCreators.addPostDB({
+        information: {
+          title: title,
+          content: contents,
+          completed,
+          category,
+        },
+        file: fileInput.current.files[0].name,
+      })
+    );
   };
+  // file: fileInput.current.files[0] ? fileInput.current.files[0] : null,
+  const fileInput = React.useRef();
+  const selectFile = (e) => {
+    // console.log(e);
+    // console.log(e.target);
+    // console.log(e.target.files[0]);
+    // console.log(fileInput.current.files[0]);
+    // const formData = new FormData();
+    // formData.append(
+    //   "photo",
+    //   fileInput.current.length && fileInput.current.files[0].uploadedFile
+    // );
+    // setFile(e.target.files);
+    // setImgBase64([]);
+    // for (var i = 0; i < e.target.files.length; i++) {
+    //   if (e.target.files[i]) {
+    //     let reader = new FileReader();
+    //     reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
+    //     // 파일 상태 업데이트
+    //     reader.onloadend = () => {
+    //       // 2. 읽기가 완료되면 아래코드가 실행됩니다.
+    //       const base64 = reader.result;
+    //       console.log(base64);
+    //       // dispatch(actionCreators.setFile(reader.result));
+    //       if (base64) {
+    //         //  images.push(base64.toString())
+    //         var base64Sub = base64.toString();
+    //         setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
+    //         //  setImgBase64(newObj);
+    //         // 파일 base64 상태 업데이트
+    //         //  console.log(images)
+    //       }
+    //     };
+    //   }
+    // }
+
+    const file = fileInput.current.files[0];
+    const reader = new FileReader();
+    console.log(file);
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      dispatch(actionCreators.setPreview(reader.result));
+    };
+  };
+
   // 로그인 기능 구현 시 활성화
   // const is_login = useSelector((state) => state.user.is_login);
   // const history = useHistory();
@@ -67,26 +122,82 @@ const PostWrite = (props) => {
 
   return (
     <div>
-      <Grid padding="16px">
-        <Upload />
+      <Grid is_flex>
+        <Grid padding="16px">
+          <Text margin="0px" size="24px" bold color="black">
+            작성페이지
+          </Text>
+        </Grid>
+        <Grid width="50%">
+          <input
+            type="radio"
+            name="language"
+            value="React"
+            onChange={changeLang}
+          />
+          React
+          <input
+            type="radio"
+            name="language"
+            value="Spring"
+            onChange={changeLang}
+          />
+          Spring
+          <input
+            type="radio"
+            name="language"
+            value="Node.js"
+            onChange={changeLang}
+          />
+          Node.js
+        </Grid>
       </Grid>
-      <Grid padding="16px" is_flex>
-        <Text margin="0px" size="24px" bold color="black">
-          미리보기
-        </Text>
-        <button style={{ border: "none", backgroundColor: "transparent" }}>
-          ✔️
-        </button>
-      </Grid>
-      <Image shape="rectangle" />
+
       <Grid padding="16px">
+        <Grid is_flex>
+          <form name="photo" encType="multipart/form-data">
+            <input
+              type="file"
+              name="photo"
+              onChange={selectFile}
+              ref={fileInput}
+            />
+            {/* <Button width="50px" margin="0px 2px 0px 2px" _onClick={() => {}}>
+            업로드
+          </Button> */}
+          </form>
+        </Grid>
+      </Grid>
+      {/* {imgBase64.map((item, i) => {
+        return (
+          <img
+            key={i}
+            className="d-block w-100"
+            src={item}
+            alt="First slide"
+            style={{ width: "100%", height: "550px" }}
+          />
+        );
+      })} */}
+      <Image src={preview} shape="rectangle" />
+      <Grid padding="16px">
+        <Grid margin="10px">
+          <input
+            type="checkbox"
+            name="completed"
+            value="{color}"
+            onChange={changeColor}
+          />
+          해결 여부
+        </Grid>
+
         <Input
           placeholder="제목을 작성해주세요!"
           margin="10px"
           _onChange={changeTitle}
         />
         <TextStyle
-          onChange={chageContents}
+          onChange={changeContents}
           label="게시글 내용"
           placeholder="게시글 내용을 작성해주세요!"
         />
