@@ -1,5 +1,9 @@
+import React from "react";
 import { Grid } from "../elements";
-import { Route, useHistory } from "react-router-dom";
+import { Route } from "react-router-dom"; //useHistory 빼보기
+
+import { ConnectedRouter } from "connected-react-router";
+import { history } from "../redux/configureStore";
 import styled from "styled-components";
 import "./App.css";
 
@@ -12,20 +16,46 @@ import PostModify from "../pages/PostModify";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import PostDetail from "../pages/PostDetail";
+import KakaoAuthHandle from "../pages/KakaoAuthHandle";
 
-import CommentList from "../components/CommentList";
-import CommentWrite from "../components/CommentWrite";
+import { actionCreators as userActions } from "../redux/modules/user";
+import { useDispatch } from "react-redux";
 
 function App() {
-  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const is_token = localStorage.getItem("Authorization") ? true : false;
+
+  React.useEffect(() => {
+    if (is_token) {
+      dispatch(userActions.loginCheckDB());
+    }
+  });
+
   return (
     <div className="App">
-      <Header />
+      <Header></Header>
       <Layout>
-        <Grid bg="white" width="700px" margin="30px auto" padding="16px">
-          <Route path="/" exact component={PostList} />
-          <CommentWrite />
-          <CommentList />
+        <Grid
+          borderRadius="10px"
+          bg="white"
+          width="700px"
+          margin="30px auto"
+          padding="16px"
+        >
+          <ConnectedRouter history={history}>
+            <Route path="/" exact component={PostList} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/signup" exact component={Signup} />
+            <Route path="/PostWrite" exact component={PostWrite} />
+            <Route path="/PostDetail/:index" exact component={PostDetail} />
+            <Route path="/PostModify/:index" exact component={PostModify} />
+            <Route
+              path="/user/callback/kakao"
+              exact
+              component={KakaoAuthHandle}
+            />
+          </ConnectedRouter>
           <Write
             onClick={() => {
               history.push("/PostWrite");
@@ -33,11 +63,6 @@ function App() {
           >
             +
           </Write>
-          <Route path="/login" exact component={Login} />
-          <Route path="/signup" exact component={Signup} />
-          <Route path="/PostWrite" exact component={PostWrite} />
-          <Route path="/PostDetail/:index" exact component={PostDetail} />
-          <Route path="/PostModify/:index" exact component={PostModify} />
         </Grid>
       </Layout>
     </div>
