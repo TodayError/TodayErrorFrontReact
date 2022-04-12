@@ -17,7 +17,7 @@ const Signup = (props) => {
       window.alert("닉네임이 형식에 맞지 않습니다. 한글/숫자 포함 3-10자");
       return;
     }
-    dispatch(userActions.__checkId(id));
+    dispatch(userActions.checkIdDB(id));
   };
 
   const signup = () => {
@@ -36,7 +36,7 @@ const Signup = (props) => {
       return;
     }
 
-    dispatch(userActions.__signup(id, pwd, pwd_check));
+    dispatch(userActions.signupDB(id, pwd, pwd_check));
   };
   return (
     <React.Fragment>

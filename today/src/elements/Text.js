@@ -2,9 +2,22 @@ import React from "react";
 import styled from "styled-components";
 
 const Text = (props) => {
-  const { bold, color, size, children, margin, font } = props;
-  const styles = { bold: bold, color: color, size: size, margin, font };
-  return <P {...styles}>{children}</P>;
+  const { bold, color, size, children, margin, font, _onClick, cursor, deco } =
+    props;
+  const styles = {
+    bold: bold,
+    color: color,
+    size: size,
+    margin,
+    font,
+    cursor,
+    deco: deco,
+  };
+  return (
+    <P onClick={_onClick} {...styles}>
+      {children}
+    </P>
+  );
 };
 
 Text.defaultProps = {
@@ -14,6 +27,9 @@ Text.defaultProps = {
   size: "14px",
   margin: false,
   font: "inherit",
+  _onClick: () => {},
+  cursor: "pointer",
+  deco: "none",
 };
 
 const P = styled.p`
@@ -22,6 +38,8 @@ const P = styled.p`
   font-weight: ${(props) => (props.bold ? "600" : "400")};
   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
   font-family: "DungGeunMo";
+  cursor: pointer;
+  ${(props) => (props.deco ? `text-decoration: ${props.deco};` : "")}
 `;
 
 export default Text;

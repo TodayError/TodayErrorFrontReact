@@ -2,86 +2,61 @@ import React from "react";
 import styled from "styled-components";
 // import Permit from "../shared/Permit";
 
-import { Grid, Text, Button } from "../elements";
 import { Link } from "react-router-dom";
-import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
-
-// import { getCookie, deleteCookie } from "../shared/Cookie";
+import { Grid, Text, Button } from "../elements";
+import { history } from "../redux/configureStore";
 
 import { useSelector, useDispatch } from "react-redux";
-// import { actionCreators as userActions } from "../redux/modules/user";
-
-import { history } from "../redux/configureStore";
-// import NotiBadge from "./NotiBadge";
+import { actionCreators as userActions } from "../redux/modules/user";
 
 const Header = (props) => {
-  //   const dispatch = useDispatch();
-  //   const is_login = useSelector((state) => state.user.is_login);
+  const dispatch = useDispatch();
+  const is_login = useSelector((state) => state.user.is_login);
+  const is_token = localStorage.getItem("Authorization") ? true : false;
+  console.log(is_login);
 
-  //   const _session_key = `firebase:authUser:${apiKey}:[DEFAULT]`;
+  // 로그인 유저일 경우
+  if (is_login && is_token) {
+    return (
+      <React.Fragment>
+        <Grid is_flex>
+          <hr style={{ margin: "5px 0px" }} />
+          <Grid padding="20px 4px" is_flex>
+            <Text margin="0px" size="40px" bold>
+              항해 통신
+            </Text>
+          </Grid>
+          <Button
+            _onClick={() => {
+              history.push("/login");
+            }}
+          >
+            React
+          </Button>
+          <Menu to={"/post/Spring"}>Spring</Menu>
+          <Menu to={"/post/Nodejs"}>Node.js</Menu>
 
-  //   const is_session = sessionStorage.getItem(_session_key) ? true : false;
-  //   console.log(is_session);
+          <Button
+            cursor="pointer"
+            margin="0px 2px"
+            width="30%"
+            text="로그아웃"
+            _onClick={dispatch(userActions.logoutDB())}
+          >
+            로그아웃
+          </Button>
+        </Grid>
+        <hr />
+        <Grid margin="5px auto">
+          <Text color="yellow" size="60px" margin="20px 0px">
+            [오늘의 에러]
+          </Text>
+        </Grid>
+      </React.Fragment>
+    );
+  }
 
-  //   if (is_login && is_session) {
-  //     return (
-  //       <React.Fragment>
-  //         <Grid is_flex padding="4px">
-  //           <Grid>
-  //             <Text margin="0px" size="24px" bold>
-  //               Hello Stranger :D
-  //             </Text>
-  //           </Grid>
-  //           <Grid is_flex>
-  //             <Button margin="0px 4px" width="100%" text="내정보"></Button>
-  //             {/* <Button
-  //               _onClick={() => {
-  //                 history.push("/noti");
-  //               }}
-  //               width="100%"
-  //               text="알림"
-  //             ></Button> */}
-  //             {/* <NotiBadge
-  //               _onClick={() => {
-  //                 history.push("/noti");
-  //               }}
-  //             /> */}
-  //             <Button
-  //               margin="0px 4px"
-  //               width="100%"
-  //               text="로그아웃"
-  //               _onClick={() => {
-  //                 dispatch(userActions.logoutFB());
-  //               }}
-  //             ></Button>
-  //           </Grid>
-  //         </Grid>
-  //       </React.Fragment>
-  //     );
-  //   }
-
-  //   // <Permit>
-  //   //   <React.Fragment>
-  //   //     <Grid is_flex padding="4px">
-  //   //       <Grid>
-  //   //         <Text margin="0px" size="24px" bold>
-  //   //           헬로
-  //   //         </Text>
-  //   //       </Grid>
-  //   //       <Grid is_flex>
-  //   //         <Button text="내정보"></Button>
-  //   //         <Button text="알림"></Button>
-  //   //         <Button
-  //   //           text="로그아웃"
-  //   //           _onClick={() => {
-  //   //             dispatch(userActions.logoutFB());
-  //   //           }}
-  //   //         ></Button>
-  //   //       </Grid>
-  //   //     </Grid>
-  //   //   </React.Fragment>
-  //   // </Permit>;
-
+  //로그인 유저가 아닐 경우
   return (
     <>
       <Grid is_flex>
@@ -91,11 +66,39 @@ const Header = (props) => {
             항해 통신
           </Text>
         </Grid>
-        <Menu to={"/post/React"}>React</Menu>
-        <Menu to={"/post/Spring"}>Spring</Menu>
-        <Menu to={"/post/Nodejs"}>Node.js</Menu>
+        <Text
+          deco="underline"
+          size="35px"
+          margin="0px 20px 10px 20px"
+          _onClick={() => {
+            history.push("/");
+          }}
+        >
+          React
+        </Text>
+        <Text
+          deco="underline"
+          size="35px"
+          margin="0px 20px 10px 20px"
+          cursor
+          _onClick={() => {
+            history.push("/login");
+          }}
+        >
+          Spring
+        </Text>
+        <Text
+          deco="underline"
+          size="35px"
+          margin="0px 20px 10px 20px"
+          _onClick={() => {
+            history.push("/signup");
+          }}
+        >
+          Node.js
+        </Text>
         <Button
-          style={{ cursor: "pointer" }}
+          cursor="pointer"
           margin="0px 2px"
           width="30%"
           text="로그인"
@@ -104,7 +107,7 @@ const Header = (props) => {
           }}
         ></Button>
         <Button
-          style={{ cursor: "pointer" }}
+          cursor="pointer"
           margin="0px 2px"
           width="30%"
           text="회원가입"

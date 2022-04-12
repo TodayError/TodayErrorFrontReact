@@ -13,6 +13,7 @@ const Button = (props) => {
     font,
     border,
     borderRadius,
+    cursor,
   } = props;
 
   if (is_float) {
@@ -30,6 +31,7 @@ const Button = (props) => {
     font,
     border,
     borderRadius,
+    cursor: cursor,
   };
 
   return (
@@ -52,19 +54,21 @@ Button.defaultProps = {
   font: "inherit",
   border: false,
   borderRadius: false,
+  cursor: "pointer",
 };
 
 const ElButton = styled.button`
   width: ${(props) => props.width};
   background-color: #adb5bd;
   color: black;
-  border: 1px solid black
+  border: 1px solid black;
   padding: ${(props) => props.padding};
   box-sizing: border-box;
   padding: ${(props) => props.padding};
   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
   font-family: "DungGeunMo";
   border-radius: 10px;
+  ${(props) => (props.cursor ? `cursor: ${props.cursor};` : "")}
 `;
 
 const FloatButton = styled.button`
