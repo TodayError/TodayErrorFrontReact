@@ -3,20 +3,17 @@ import { Grid, Text, Button, Image, Input } from "../elements";
 import styled from "styled-components";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { actionCreators } from "../redux/modules/post";
+import { useHistory } from "react-router-dom";
 
 const PostWrite = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const preview = useSelector((state) => state.post.preview);
-  console.log(preview);
+  const preview = useSelector((state) => state.image.preview);
   const [contents, setContents] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [completed, setCompleted] = React.useState(false);
   const [category, setCategory] = React.useState("React");
-  const [imgBase64, setImgBase64] = React.useState([]);
-  const [file, setFile] = React.useState([]);
 
   const changeColor = () => {
     setCompleted(!completed);
@@ -35,68 +32,29 @@ const PostWrite = (props) => {
     console.log(e.target.value);
   };
 
-  const addPost = () => {
-    if (title == "" || contents == "" || category == "" || file == null) {
-      window.alert("게시물을 다 넣어주세요!");
-      return;
-    }
-    dispatch(
-      actionCreators.addPostDB({
-        information: {
-          title: title,
-          content: contents,
-          completed,
-          category,
-        },
-        file: fileInput.current.files[0].name,
-      })
-    );
-  };
-  // file: fileInput.current.files[0] ? fileInput.current.files[0] : null,
+  const is_uploading = useSelector((state) => state.image.uploading);
   const fileInput = React.useRef();
-  const selectFile = (e) => {
-    // console.log(e);
-    // console.log(e.target);
-    // console.log(e.target.files[0]);
-    // console.log(fileInput.current.files[0]);
-    // const formData = new FormData();
-    // formData.append(
-    //   "photo",
-    //   fileInput.current.length && fileInput.current.files[0].uploadedFile
-    // );
-    // setFile(e.target.files);
-    // setImgBase64([]);
-    // for (var i = 0; i < e.target.files.length; i++) {
-    //   if (e.target.files[i]) {
-    //     let reader = new FileReader();
-    //     reader.readAsDataURL(e.target.files[i]); // 1. 파일을 읽어 버퍼에 저장합니다.
-    //     // 파일 상태 업데이트
-    //     reader.onloadend = () => {
-    //       // 2. 읽기가 완료되면 아래코드가 실행됩니다.
-    //       const base64 = reader.result;
-    //       console.log(base64);
-    //       // dispatch(actionCreators.setFile(reader.result));
-    //       if (base64) {
-    //         //  images.push(base64.toString())
-    //         var base64Sub = base64.toString();
-    //         setImgBase64((imgBase64) => [...imgBase64, base64Sub]);
-    //         //  setImgBase64(newObj);
-    //         // 파일 base64 상태 업데이트
-    //         //  console.log(images)
-    //       }
-    //     };
-    //   }
-    // }
 
-    const file = fileInput.current.files[0];
+  const selectFile = (e) => {
     const reader = new FileReader();
-    console.log(file);
+    const file = fileInput.current.files[0];
     reader.readAsDataURL(file);
+
     reader.onloadend = () => {
       dispatch(actionCreators.setPreview(reader.result));
     };
   };
 
+  const uploadDB = (e) => {
+    e.preventDefault();
+    let file = fileInput.current.files[0];
+    dispatch(
+      actionCreators.uploadDB({
+        information: { title: title, content: contents, completed, category },
+        file,
+      })
+    );
+  };
   // 로그인 기능 구현 시 활성화
   // const is_login = useSelector((state) => state.user.is_login);
   // const history = useHistory();
@@ -122,94 +80,84 @@ const PostWrite = (props) => {
 
   return (
     <div>
-      <Grid is_flex>
-        <Grid padding="16px">
-          <Text margin="0px" size="24px" bold color="black">
-            작성페이지
-          </Text>
-        </Grid>
-        <Grid width="50%">
-          <input
-            type="radio"
-            name="language"
-            value="React"
-            onChange={changeLang}
-          />
-          React
-          <input
-            type="radio"
-            name="language"
-            value="Spring"
-            onChange={changeLang}
-          />
-          Spring
-          <input
-            type="radio"
-            name="language"
-            value="Node.js"
-            onChange={changeLang}
-          />
-          Node.js
-        </Grid>
-      </Grid>
-
-      <Grid padding="16px">
+      <form onSubmit={uploadDB}>
         <Grid is_flex>
-          <form name="photo" encType="multipart/form-data">
+          <Grid padding="16px">
+            <Text margin="0px" size="24px" bold color="black">
+              작성페이지
+            </Text>
+          </Grid>
+
+          <Grid width="50%">
             <input
-              type="file"
-              name="photo"
-              onChange={selectFile}
-              ref={fileInput}
+              type="radio"
+              name="language"
+              value="React"
+              onChange={changeLang}
             />
-            {/* <Button width="50px" margin="0px 2px 0px 2px" _onClick={() => {}}>
-            업로드
-          </Button> */}
-          </form>
-        </Grid>
-      </Grid>
-      {/* {imgBase64.map((item, i) => {
-        return (
-          <img
-            key={i}
-            className="d-block w-100"
-            src={item}
-            alt="First slide"
-            style={{ width: "100%", height: "550px" }}
-          />
-        );
-      })} */}
-      <Image src={preview} shape="rectangle" />
-      <Grid padding="16px">
-        <Grid margin="10px">
-          <input
-            type="checkbox"
-            name="completed"
-            value="{color}"
-            onChange={changeColor}
-          />
-          해결 여부
+            React
+            <input
+              type="radio"
+              name="language"
+              value="Spring"
+              onChange={changeLang}
+            />
+            Spring
+            <input
+              type="radio"
+              name="language"
+              value="Node.js"
+              onChange={changeLang}
+            />
+            Node.js
+          </Grid>
         </Grid>
 
-        <Input
-          placeholder="제목을 작성해주세요!"
-          margin="10px"
-          _onChange={changeTitle}
+        <Grid padding="16px">
+          <input
+            type="file"
+            onChange={selectFile}
+            ref={fileInput}
+            // disabled={is_uploading}
+          />
+        </Grid>
+
+        <Image
+          src={preview ? preview : "http://via.placeholder.com/400x300"}
+          shape="rectangle"
         />
-        <TextStyle
-          onChange={changeContents}
-          label="게시글 내용"
-          placeholder="게시글 내용을 작성해주세요!"
-        />
-      </Grid>
-      <Grid center>
-        <Button
-          text="게시글 작성"
-          _onClick={addPost}
-          margin="0px 2px"
-          width="30%"
-        />
-      </Grid>
+
+        <Grid padding="16px">
+          <Grid margin="10px">
+            <input
+              type="checkbox"
+              name="completed"
+              value="{color}"
+              onChange={changeColor}
+            />
+            해결 여부
+          </Grid>
+
+          <Input
+            placeholder="제목을 작성해주세요!"
+            margin="10px"
+            _onChange={changeTitle}
+          />
+          <TextStyle
+            onChange={changeContents}
+            label="게시글 내용"
+            placeholder="게시글 내용을 작성해주세요!"
+          />
+        </Grid>
+        <Grid center>
+          <Button
+            text="게시글 작성"
+            _onClick={uploadDB}
+            margin="0px 2px"
+            width="30%"
+          />
+        </Grid>
+      </form>
     </div>
   );
 };
