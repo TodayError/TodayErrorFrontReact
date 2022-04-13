@@ -2,8 +2,20 @@ import React from "react";
 import styled from "styled-components";
 
 const Text = (props) => {
-  const { bold, color, size, children, margin, font, _onClick, cursor, deco } =
-    props;
+  const {
+    bold,
+    color,
+    size,
+    children,
+    margin,
+    font,
+    _onClick,
+    cursor,
+    deco,
+    textAlign,
+    textShadow,
+  } = props;
+
   const styles = {
     bold: bold,
     color: color,
@@ -12,6 +24,8 @@ const Text = (props) => {
     font,
     cursor,
     deco: deco,
+    textAlign: textAlign,
+    textShadow: textShadow,
   };
   return (
     <P onClick={_onClick} {...styles}>
@@ -28,8 +42,10 @@ Text.defaultProps = {
   margin: false,
   font: "inherit",
   _onClick: () => {},
-  cursor: "pointer",
+  cursor: "default",
   deco: "none",
+  textAlign: "center",
+  textShadow: "none",
 };
 
 const P = styled.p`
@@ -38,8 +54,10 @@ const P = styled.p`
   font-weight: ${(props) => (props.bold ? "600" : "400")};
   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
   font-family: "DungGeunMo";
-  cursor: pointer;
-  ${(props) => (props.deco ? `text-decoration: ${props.deco};` : "")}
+  ${(props) => (props.cursor ? `cursor: ${props.cursor};` : "")};
+  ${(props) => (props.deco ? `text-decoration: ${props.deco};` : "")};
+  ${(props) => (props.textAlign ? `text-align: ${props.textAlign};` : "")};
+  ${(props) => (props.textShadow ? `text-shadow: ${props.textShadow};` : "")};
 `;
 
 export default Text;

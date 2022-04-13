@@ -59,20 +59,19 @@ const loginDB = (id, pwd) => {
         .then(function (res) {
           console.log(res);
 
+          let data = res.headers.authorization;
+          let accessToken = data.split("BEARER ")[1];
+          console.log("토큰넘어왔어!", accessToken);
+
+          localStorage.setItem("Authorization", accessToken);
+
           dispatch(setUser(id));
           localStorage.setItem("username", id);
 
-          let data = res.headers.authorization;
-          let accessToken = data.split("BEARER")[1];
-          console.log(accessToken); // 어떤 모양이 뽑히려나??
-          localStorage.setItem("Authorization", accessToken);
-          setCookie("is_login", "success");
-
-          axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${accessToken}`;
-          //요청할때 기본 모양새를 잡는 것 같은데..accessToken을 localStorage, cookie등에 저장하지 않는다!
-
+          // axios.defaults.headers.common[
+          //   "Authorization"
+          // ] = `Bearer ${accessToken}`;
+          // //요청할때 기본 모양새를 잡는 것 같은데..accessToken을 localStorage, cookie등에 저장하지 않는다!
           history.push("/");
         });
     } catch (err) {
@@ -82,14 +81,42 @@ const loginDB = (id, pwd) => {
   };
 };
 
+const kakaoLogin = (code) => {
+  return function (dispatch, getState, { history }) {
+    console.log(code);
+    try {
+      axios
+        .get(`http://3.38.116.203/user/kakao/callback?code=${code}`)
+        .then(function (res) {
+          console.log(res); //토큰이 넘어올 것
+          const jwtToken = res.data.jwtToken;
+          const id = res.data.nickname;
+          localStorage.setItem("Authorization", jwtToken); // 로컬에 저장
+          //Setuser 어떻게?
+          localStorage.setItem("username", id);
+          dispatch(setUser(id));
+
+          history.replace("/"); //토큰받아서 로그인 후 화면 전환(메인)
+        });
+    } catch (err) {
+      console.log("소셜로그인 에러", err);
+      window.alert("로그인에 실패하였습니다.");
+      history.replace("/login");
+    }
+  };
+};
+
+//token Check 확인필요
 const loginCheckDB = () => {
   return function (dispatch, getState, { history }) {
     const nickname = localStorage.getItem("username");
-    const tokenCheck = localStorage.getItem("Authorization");
+    console.log(nickname);
+    const tokenCheck = localStorage.Authorization;
+    console.log(tokenCheck);
     if (tokenCheck) {
-      dispatch(setUser({ user: nickname }));
-      history.replace("/");
+      dispatch(setUser(nickname));
     } else {
+      console.log("로그아웃할거야");
       dispatch(logOut());
     }
   };
@@ -97,13 +124,14 @@ const loginCheckDB = () => {
 
 const logoutDB = () => {
   return function (dispatch, getState, { history }) {
-    deleteCookie("is_login");
+    console.log("로그아웃할래!");
+    localStorage.removeItem("Authorization");
     localStorage.removeItem("username");
     dispatch(logOut());
     history.replace("/login");
   };
 };
-const checkIdDB = (id) => {
+const dupCheckIdDB = (id) => {
   return function (dispatch, getState, { history }) {
     console.log("중복체크한다!", id);
     try {
@@ -128,6 +156,9 @@ export default handleActions(
   {
     [SET_USER]: (state, action) =>
       produce(state, (draft) => {
+        setCookie("is_login", "success");
+        console.log("리덕스 user에 담을 것", action.payload.user);
+        //리덕스에 담는 것
         draft.user = action.payload.user;
         draft.is_login = true;
       }),
@@ -137,7 +168,7 @@ export default handleActions(
         draft.user = null;
         draft.is_login = false;
       }),
-    // [GET_USER]: (state, action) => produce(state, (draft) => {}),
+    [GET_USER]: (state, action) => produce(state, (draft) => {}),
   },
   initialState
 );
@@ -147,10 +178,10 @@ const actionCreators = {
   logOut,
   loginDB,
   loginCheckDB,
-  checkIdDB,
+  dupCheckIdDB,
   signupDB,
   logoutDB,
-  //   loginCheckFB,
+  kakaoLogin,
 };
 
 export { actionCreators };

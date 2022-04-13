@@ -13,6 +13,7 @@ const Grid = (props) => {
     borderLine,
     borderRadius,
     boxShadow,
+    display,
   } = props;
   const styles = {
     is_flex: is_flex,
@@ -24,6 +25,7 @@ const Grid = (props) => {
     borderLine: borderLine,
     borderRadius: borderRadius,
     boxShadow: boxShadow,
+    display: display,
   };
   return (
     <React.Fragment>
@@ -43,6 +45,7 @@ Grid.defaultProps = {
   borderLine: false,
   borderRadius: false,
   boxShadow: false,
+  display: "block",
 };
 
 const GridBox = styled.div`
@@ -52,6 +55,7 @@ const GridBox = styled.div`
   ${(props) => (props.padding ? `padding: ${props.padding};` : "")}
   ${(props) => (props.margin ? `margin : ${props.margin};` : "")}
   ${(props) => (props.bg ? `background-color : ${props.bg};` : "")}
+  ${(props) => (props.display ? `display : ${props.display};` : "")}
   ${(props) =>
     props.is_flex
       ? `display : flex; align-items: center; justify-content: space-between`

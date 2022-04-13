@@ -16,15 +16,20 @@ import PostModify from "../pages/PostModify";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import PostDetail from "../pages/PostDetail";
+
 import KakaoAuthHandle from "../pages/KakaoAuthHandle";
 
 import { actionCreators as userActions } from "../redux/modules/user";
 import { useDispatch } from "react-redux";
+import CommentWrite from "../components/CommentWrite";
+import CommentItem from "../components/CommentItem";
+import CommentList from "../components/CommentList";
+import CommentTest from "../pages/CommentTest";
 
 function App() {
   const dispatch = useDispatch();
 
-  const is_token = localStorage.getItem("Authorization") ? true : false;
+  const is_token = localStorage.getItem("Authorization");
 
   React.useEffect(() => {
     if (is_token) {
@@ -34,27 +39,25 @@ function App() {
 
   return (
     <div className="App">
-      <Header></Header>
+      <Header />
       <Layout>
         <Grid
           borderRadius="10px"
           bg="white"
           width="700px"
-          margin="30px auto"
+          margin="10px auto"
           padding="16px"
+          boxShadow="0 10px 5px 5px rgba(0,0,0,0.7)"
         >
           <ConnectedRouter history={history}>
-            <Route path="/" exact component={PostList} />
+            <Route path="/" exact component={CommentTest} />
+            {/* <Route path="/" exact component={PostList} /> */}
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
             <Route path="/PostWrite" exact component={PostWrite} />
             <Route path="/PostDetail/:index" exact component={PostDetail} />
             <Route path="/PostModify/:index" exact component={PostModify} />
-            <Route
-              path="/user/callback/kakao"
-              exact
-              component={KakaoAuthHandle}
-            />
+            <Route path="/user/kakao/callback" component={KakaoAuthHandle} />
           </ConnectedRouter>
           <Write
             onClick={() => {

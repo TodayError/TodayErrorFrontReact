@@ -17,7 +17,7 @@ const Signup = (props) => {
       window.alert("닉네임이 형식에 맞지 않습니다. 한글/숫자 포함 3-10자");
       return;
     }
-    dispatch(userActions.checkIdDB(id));
+    dispatch(userActions.dupCheckIdDB(id));
   };
 
   const signup = () => {
@@ -90,6 +90,9 @@ const Signup = (props) => {
             _onChange={(e) => {
               setPwdCheck(e.target.value);
             }}
+            value={pwd_check}
+            is_submit
+            onSubmit={signup}
           />
         </Grid>
 

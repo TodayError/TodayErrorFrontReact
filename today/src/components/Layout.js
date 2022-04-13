@@ -6,15 +6,7 @@ function Layout({ children }) {
 }
 
 const Wrapper = styled.div`
-  padding-top: 70px;
-`;
-
-Layout.Main = styled.div`
-  margin: 0 auto;
-  margin-top: 2rem;
-  width: 60%;
-  position: relative;
-  background: gray;
+  padding-top: 5px;
 `;
 
 export default Layout;

@@ -7,16 +7,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 const CommentWrite = (props) => {
   const dispatch = useDispatch();
-  const [comment_text, setCommentText] = React.useState();
+  const [comment, setComment] = React.useState();
 
-  const { postId } = props;
+  const { post_id } = props;
   const onChange = (e) => {
-    setCommentText(e.target.value);
+    setComment(e.target.value);
   };
 
   const write = () => {
-    dispatch(commentActions.addCommentFB(postId, comment_text));
-    setCommentText(""); //작성 누르면 인풋창 value 날리기
+    if (comment === "") {
+      window.alert("댓글을 입력해주세요!");
+      return;
+    }
+    dispatch(commentActions.addCommentDB(post_id, comment));
+    setComment(""); //작성 누르면 인풋창 value 날리기
   };
 
   return (
@@ -25,12 +29,15 @@ const CommentWrite = (props) => {
         <Input
           placeholder="댓글내용을 입력해 주세요 :)"
           _onChange={onChange}
-          value={comment_text}
-          onSubmit={write} //value를 넣어주는 이유는, 작성버튼 누르면 텍스트를 인풋창에서 날려버리기 위함
-          is_submit
+          value={comment} //value를 넣어주는 이유는, 작성버튼 누르면 텍스트를 인풋창에서 날려버리기 위함
           multiLine
         />
-        <Button width="50px" margin="0px 2px 0px 2px" _onClick={write}>
+        <Button
+          width="50px"
+          margin="0px 2px 0px 2px"
+          padding="20px 0px"
+          _onClick={write}
+        >
           작성
         </Button>
       </Grid>

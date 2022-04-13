@@ -2,21 +2,16 @@ import axios from "axios";
 import { useEffect } from "react";
 import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
+import { actionCreators as userActions } from "../redux/modules/user";
+import { useDispatch } from "react-redux";
 
 const KakaoAuthHandle = (props) => {
+  console.log("여기들어왔어!");
+  const dispatch = useDispatch();
+  let code = new URL(window.location.href).searchParams.get("code");
   useEffect(() => {
-    let code = new URL(window.location.href).searchParams.get("code");
-    const kakaoLogin = async () => {
-      await axios
-        .get(`http://localhost:3000/user/kakao/callback?code=${code}`)
-        .then((res) => {
-          console.log(res);
-          sessionStorage.setItem("x_auth", res.headers.authorization);
-          props.history.replace("/");
-        });
-    };
-    kakaoLogin();
-  }, [props.history]);
+    dispatch(userActions.kakaoLogin(code));
+  }, []);
 
   return (
     <>

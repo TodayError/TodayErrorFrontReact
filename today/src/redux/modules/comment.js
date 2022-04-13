@@ -1,6 +1,7 @@
 import { createAction, handleActions } from "redux-actions";
 import { actionCreators as postActions } from "./post";
 import { produce } from "immer";
+import { RES } from "./response";
 
 import axios from "axios";
 
@@ -9,22 +10,28 @@ const ADD = "comment/ADD";
 const LOAD = "comment/LOAD";
 const DELETE = "comment/DELETE";
 const EDIT = "comment/EDIT";
+const SET_EDIT = "comment/SET_EDIT";
 
 //Action Creators
-const getComment = createAction(LOAD, (post_id, comment) => ({
+const getComment = createAction(LOAD, (post_id, comments) => ({
   post_id,
-  comment,
+  comments,
 }));
 const addComment = createAction(ADD, (post_id, comment) => ({
   post_id,
   comment,
 }));
-const editComment = createAction(EDIT, (post_id, coId, newContent) => ({
+const editComment = createAction(EDIT, (post_id, commentId, newComment) => ({
   post_id,
-  coId,
-  newContent,
+  commentId,
+  newComment,
 }));
-const delComment = createAction(DELETE, (coId) => ({ coId }));
+const delComment = createAction(DELETE, (commentId) => ({ commentId }));
+
+const setEdit = createAction(SET_EDIT, (post_id, commentId) => ({
+  post_id,
+  commentId,
+}));
 
 // const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
 
@@ -32,40 +39,70 @@ const delComment = createAction(DELETE, (coId) => ({ coId }));
 const initialState = {
   comment: null,
   comments: [],
+  is_edit: false,
 };
 
 //Middlewares
 
-const getCommentDB = (postId = null, content) => {
+const getCommentDB = (post_id = null) => {
   return function (dispatch, getState, { history }) {
-    if (!postId) {
+    if (!post_id) {
       return;
     }
 
     try {
-      const { data } = axios
-        .get(`http://3.38.116.203/comment/${postId}`)
-        .then((res) => {
-          console.log(res);
-          let commentList = res.data;
-          dispatch(getComment(commentList));
-        });
+      // const { data } = axios
+      //   .get(`http://3.38.116.203/comment/${post_id}`)
+      //   .then((res) => {
+      //     console.log(res);
+      //     let comments = res.data;
+      //     dispatch(getComment(post_id, comments));
+      //   });
+
+      //mockApi
+      const comments = RES[post_id].comments;
+      dispatch(getComment(post_id, comments));
+      //mockApi
     } catch (err) {
       console.log(err);
-      window.alert("댓글정보를 다시 가져올 수 없습니다.");
+      window.alert("댓글정보를 가져올 수 없습니다.");
     }
   };
 };
 
-const addCommentDB = (postId, content) => {
+const addCommentDB = (post_id, comment) => {
   return function (dispatch, getState, { history }) {
-    console.log("댓글추가한다!", postId);
+    console.log("댓글추가한다!", post_id, comment);
     try {
       const { data } = axios.post("http://3.38.116.203/comment", {
-        postId: postId,
-        content: content,
+        postId: post_id,
+        content: comment,
       });
-      dispatch(addComment(data));
+      
+      const comment_list = getState().comments
+      console.log("스테이트의 리스트보자", comment_list)
+      data.forEach((c)=>{
+        comment_list.push({is_edit: false, ...c.})
+      })
+      dispatch(addComment(post_id, data));
+
+      // //mock
+      // const username = getState().user.user;
+      // const comment_list = RES[post_id].comments;
+      // const NewComment = {
+      //   comnentId: 111,
+      //   nickname: username,
+      //   comment: comment,
+      //   createdAt: "22-04-13",
+      //   is_edit: false,
+      // };
+
+      // console.log(NewComment);
+      // comment_list.unshift(NewComment);
+      // console.log(comment_list); //추가는 되고 있는데.. 왜 unshift를 못읽는다고 구래?
+
+      // dispatch(addComment(post_id, NewComment));
+      // //mock
     } catch (err) {
       console.log(err);
       window.alert("다시 시도해 주세요.");
@@ -73,16 +110,20 @@ const addCommentDB = (postId, content) => {
   };
 };
 
-const editCommentDB = (post_id, coId, newContent) => {
+const editCommentDB = (post_id, commentId, newComment, setIsEdit) => {
   return function (dispatch, getState, { history }) {
-    console.log("댓글 수정한다!", post_id, coId);
+    console.log("댓글 수정한다!", post_id, commentId);
     try {
       axios
-        .post(`http://3.38.116.203/comment/${coId}`, { content: newContent })
+        .post(`http://3.38.116.203/comment/${commentId}`, {
+          content: newComment,
+        })
         .then((res) => {
+          setIsEdit(false);
           console.log(res);
           const data = res.data;
-          dispatch(editComment(coId, data));
+
+          dispatch(editComment(post_id, commentId, newComment));
         });
     } catch (err) {
       console.log(err);
@@ -91,16 +132,18 @@ const editCommentDB = (post_id, coId, newContent) => {
   };
 };
 
-const delCommentDB = (post_id, coId)  => (dispatch)=>{
-  console.log("댓글 삭제한다!", post_id, coId);
-  try{
-    axios.delete(`http://3.38.116.203/comment/${coId}`)
-    .then ((res)=> {
-      console.log(res)
-      dispatch(delComment(coId))
-    })
+const delCommentDB = (post_id, commentId) => (dispatch) => {
+  console.log("댓글 삭제한다!", post_id, commentId);
+  try {
+    axios.delete(`http://3.38.116.203/comment/${commentId}`).then((res) => {
+      console.log(res);
+      dispatch(delComment(commentId));
+    });
+  } catch (err) {
+    console.log(err);
+    window.alert("다시 시도해 주세요.");
   }
-}
+};
 // //   const post = getState().post.list.find((l) => l.id === postId);
 // //   comment = { ...comment, id: postId };
 // //firestore 의 갯수 +1하기
@@ -148,7 +191,8 @@ export default handleActions(
     [LOAD]: (state, action) =>
       produce(state, (draft) => {
         // 댓글리스트를 매번 스토어에서 받아오는 것은 비효율적. 리덕스에 딕셔너리로 넣고 사용하자. let data = {[post_id]: com_list, ...}
-        draft.comments[action.payload.post_id] = action.payload.comment;
+        //각각 게시글 방을 만들어준다고 생각
+        draft.comments[action.payload.post_id] = action.payload.comments;
       }),
 
     [ADD]: (state, action) =>
@@ -157,8 +201,36 @@ export default handleActions(
       }),
     [EDIT]: (state, action) =>
       produce(state, (draft) => {
-        const data = action.payload.content
-        draft.comments.find((comment) => comment.postId === data.id);
+        let idx = draft.comments.findIndex((c) => {
+          return parseInt(c.commentId) === parseInt(action.payload.commentId);
+        });
+
+        draft.comments[idx] = {
+          ...draft.comments[idx],
+          comment: action.payload.NewComment,
+        };
+
+        // console.log(action.payload); //post_id, commentId, newComment 확인해보기
+        // const data = action.payload.newComment; //
+
+        // draft.comments.map((comment, idx) => {
+        //   if (comment.commentId === data.commentId) {
+        //     return (draft.comments[idx] = data);
+        //   } else {
+        //     return comment;
+        //   }
+        // });
+      }),
+    [SET_EDIT]: (state, action) =>
+      produce(state, (draft) => {
+        const comment_list = draft.comments[action.payload.post_id];
+      }),
+    [DELETE]: (state, action) =>
+      produce(state, (draft) => {
+        const new_comment_list = draft.comments.filter((c) => {
+          return parseInt(action.payload.commentId) !== c.commentId;
+        });
+        draft.comments = new_comment_list;
       }),
   },
   initialState
@@ -169,6 +241,8 @@ const actionCreators = {
   getComment,
   addComment,
   addCommentDB,
+  editCommentDB,
+  delCommentDB,
 };
 
 export { actionCreators };

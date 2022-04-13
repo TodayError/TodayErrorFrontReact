@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
 import { nicknameCheck } from "../shared/Check";
 
-import { KAKAO_AUTH_URL } from "../shared/KakaoLogin";
+import { KAKAO_AUTH_URL } from "../shared/KakaoAuth";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -60,8 +60,13 @@ const Login = () => {
             label="패스워드"
             placeholder="패스워드를 입력해주세요."
             type="password"
+            value={pwd}
             _onChange={(e) => {
               setPwd(e.target.value);
+            }}
+            is_submit
+            onSubmit={() => {
+              login();
             }}
           />
         </Grid>
