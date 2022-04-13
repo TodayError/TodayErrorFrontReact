@@ -1,60 +1,39 @@
 import React from "react";
-import { Button, Grid } from "../elements";
-import { useDispatch } from "react-redux";
-import { actionCreators } from "../redux/modules/post";
+import { useDispatch, useSelector } from "react-redux";
+import { actionCreator as imageActions } from "../redux/modules/image";
 
 const Upload = (props) => {
   const dispatch = useDispatch();
+  const is_uploading = useSelector((state) => state.image.uploading);
   const fileInput = React.useRef();
 
   const selectFile = (e) => {
-    console.log(e);
-    console.log(e.target);
-    console.log(e.target.files[0]);
-    console.log(fileInput.current.files[0]);
-    const file = fileInput.current.files[0];
     const reader = new FileReader();
-    console.log(file);
+    const file = fileInput.current.files[0];
     reader.readAsDataURL(file);
+
     reader.onloadend = () => {
-      dispatch(actionCreators.setPreview(reader.result));
+      dispatch(imageActions.setPreview(reader.result));
     };
   };
 
-  // const fileInput = React.useRef();
-  // // const selectFile = (e) => {
-  //   //const file = is_edit? "http://3.35.233.188/"+_post.thumbnail:fileInput.current.files[0];
-  //   const file = fileInput.current.files[0];
-  //   const reader = new FileReader();
+  const uploadDB = (e) => {
+    e.preventDefault();
+    let image = fileInput.current.files[0];
+    dispatch(imageActions.uploadDB(image));
+  };
 
-  //   console.log(file);
-  //   reader.readAsDataURL(file);s
-
-  //   reader.onloadend = () => {
-  //     dispatch(actionCreators.setPreview(reader.result));
-  //   };
-  // };
-
-  // const onChange = (e) => {
-  //   const img = e.target.files[0];
-  //   console.log(img);
-  //   const formData = new FormData();
-  //   console.log(formData);
-  //   formData.append("file", img);
-  //   for (const keyValue of formData) console.log(keyValue);
-  // };
-
-  // const UploadDB = () => {
-  //   let image = fileInput.current.files[0];
-  // };
   return (
     <>
-      <Grid is_flex>
-        <input type="file" onChange={selectFile} ref={fileInput} />
-        {/* <Button width="50px" margin="0px 2px 0px 2px" >
-          업로드
-        </Button> */}
-      </Grid>
+      <form onSubmit={uploadDB}>
+        <input
+          type="file"
+          onChange={selectFile}
+          ref={fileInput}
+          // disabled={is_uploading}
+        />
+        <button>업로드하기</button>
+      </form>
     </>
   );
 };

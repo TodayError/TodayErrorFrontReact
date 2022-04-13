@@ -36,8 +36,8 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/PostWrite" exact component={PostWrite} />
-          <Route path="/PostDetail/:index" exact component={PostDetail} />
-          <Route path="/PostModify/:index" exact component={PostModify} />
+          <Route path="/PostDetail/:postid" exact component={PostDetail} />
+          <Route path="/PostModify/:postid" exact component={PostModify} />
         </Grid>
       </Layout>
     </div>

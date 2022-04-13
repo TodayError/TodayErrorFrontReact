@@ -3,13 +3,14 @@ import { Grid, Image, Text, Button } from "../elements";
 import { useHistory } from "react-router-dom";
 
 const Post = (props) => {
+  console.log(props);
   const history = useHistory();
   return (
     <>
       <div
         style={{ backgroundColor: "#ca6702", marginTop: "30px" }}
         onClick={() => {
-          history.push("/PostDetail/" + props.ix);
+          history.push(`/PostDetail/${props.postid}`);
         }}
       >
         <Grid is_flex width="auto">

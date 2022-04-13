@@ -5,23 +5,34 @@ import { useSelector, useDispatch } from "react-redux";
 import { actionCreators } from "../redux/modules/post";
 
 const PostDetail = (props) => {
+  console.log(props);
   const history = useHistory();
+  //아이디 값 찾아내기
   const params = useParams();
-  console.log(params);
-  const index = params.index;
-  const post_list = useSelector((state) => state.post.list);
-  console.log(post_list[index]);
+  // console.log(params);
+  const Id = props.match.params.postid;
+  console.log(Id);
+  const post = useSelector((state) => state.post.list);
+  console.log(post);
+  console.log(post[0]);
+
+  // let post_idx = post.findIndex((p) => p.id === post_Id);
+  // // const post = post_list[post_idx];
+  // console.log(post_idx);
+
   const dispatch = useDispatch();
+
   React.useEffect(() => {
-    dispatch(actionCreators.getPostDB());
+    dispatch(actionCreators.getDetailDB(Id));
   }, []);
-  //   const delPost = () => {
-  //     dispatch(actionCreators.deletePostDB(_post.id));
-  //    history.replace("/")
-  // };
+
+  const delPost = () => {
+    dispatch(actionCreators.deletePostDB(Id));
+    // history.replace("/");
+  };
   const onRemove = () => {
     if (window.confirm("정말 삭제합니까?")) {
-      //  delPost();
+      delPost();
     } else {
       alert("취소합니다.");
     }
@@ -31,24 +42,23 @@ const PostDetail = (props) => {
       <Text color="black" bold size="24px">
         상세페이지
       </Text>
-
       <Grid is_flex width="auto">
         <Text color="black" margin="16px" size="20px">
-          {post_list[index].nickname}
+          {post[0].nickName}
         </Text>
         <Grid is_flex width="auto">
-          <Text color="black">{post_list[index].category}</Text>
+          <Text color="black">{post[0].category}</Text>
           <Text color="black" margin="16px">
-            {post_list[index].createdAt}
+            {post[0].createdAt}
           </Text>
         </Grid>
       </Grid>
       <Grid>
-        <Image shape="rectangle" src={post_list[index].imageUrl} />
+        <Image shape="rectangle" src={post[0].imageUrl} />
       </Grid>
       <Grid padding="16px">
-        <Text color="black">제목: {post_list[index].title}</Text>
-        <Text color="black">내용: {post_list[index].content}</Text>
+        <Text color="black">제목: {post[0].title}</Text>
+        <Text color="black">내용: {post[0].content}</Text>
       </Grid>
       <Grid center>
         <Button
@@ -56,17 +66,10 @@ const PostDetail = (props) => {
           width="30%"
           text="게시글 수정"
           _onClick={() => {
-            history.push("/PostModify/" + index);
+            history.push(`/PostModify/${props.Id}`);
           }}
         />
-        <Button
-          margin="0px 2px"
-          width="30%"
-          text="목록으로 가기"
-          _onClick={() => {
-            history.push("/");
-          }}
-        />
+
         <Button
           margin="0px 2px"
           width="30%"
