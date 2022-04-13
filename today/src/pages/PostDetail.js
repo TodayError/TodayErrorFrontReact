@@ -12,7 +12,7 @@ const PostDetail = (props) => {
   const history = useHistory();
   //아이디 값 찾아내기
   const params = useParams();
-<<<<<<< Updated upstream
+
   // console.log(params);
   const Id = props.match.params.postid;
   console.log(Id);
@@ -24,19 +24,9 @@ const PostDetail = (props) => {
   // // const post = post_list[post_idx];
   // console.log(post_idx);
 
-=======
-  console.log(params);
-  const index = params.index;
-  const post_list = useSelector((state) => state.post.list);
-
   //코멘트 테스트 위해 추가함
   const is_login = useSelector((state) => state.user.is_login);
-  const post_id = useSelector((state) => state.post.list.postId);
-  console.log(post_id);
-  //
 
-  console.log(post_list[index]);
->>>>>>> Stashed changes
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -77,7 +67,10 @@ const PostDetail = (props) => {
         <Text color="black">제목: {post[0].title}</Text>
         <Text color="black">내용: {post[0].content}</Text>
       </Grid>
-
+      <Grid>
+        <CommentWrite post_id={props.postId} />
+        <CommentList post_id={props.postId} />
+      </Grid>
       <Grid center>
         <Button
           margin="0px 2px"

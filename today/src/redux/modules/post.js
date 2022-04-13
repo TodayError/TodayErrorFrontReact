@@ -42,7 +42,7 @@ const initialPost = {
 const getPostDB = () => {
   return async function (dispatch, getState, { history }) {
     try {
-      const { data } = await axios.get("http://54.180.105.154/api/main");
+      const { data } = await axios.get("http://3.38.116.203/api/main");
       console.log(data);
       dispatch(setPost(data));
     } catch (error) {
@@ -58,7 +58,7 @@ const getDetailDB = (postId) => {
   return async function (dispatch, getState, { history }) {
     try {
       const { data } = await axios.get(
-        `http://54.180.105.154/api/details/${postId}`
+        `http://3.38.116.203/api/details/${postId}`
       );
       console.log(data.body);
       let detail_data = [{ ...data.body }];
@@ -104,7 +104,7 @@ const uploadDB = (payload) => {
     console.log(payload);
     await axios({
       method: "post",
-      url: "http://54.180.105.154/api/file",
+      url: "http://3.38.116.203/api/file",
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -141,7 +141,7 @@ const deletePostDB = (postId) => {
   return async function (dispatch, getState, { history }) {
     try {
       const data = await axios.delete(
-        `http://54.180.105.154/api/posts/${postId}`
+        `http://3.38.116.203/api/posts/${postId}`
       );
       const _post = getState().post.list;
       console.log(_post);
