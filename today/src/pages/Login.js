@@ -7,9 +7,9 @@ import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
 import { nicknameCheck } from "../shared/Check";
 
-import { KAKAO_AUTH_URL } from "../shared/OAuth";
+import { KAKAO_AUTH_URL } from "../shared/KakaoLogin";
 
-const Login = (props) => {
+const Login = () => {
   const dispatch = useDispatch();
 
   const [id, setId] = React.useState("");
@@ -26,7 +26,11 @@ const Login = (props) => {
       return;
     }
 
-    dispatch(userActions.__login(id, pwd));
+    dispatch(userActions.loginDB(id, pwd));
+  };
+
+  const kakaoAuth = () => {
+    window.location.href = KAKAO_AUTH_URL;
   };
 
   return (
@@ -69,7 +73,7 @@ const Login = (props) => {
             login();
           }}
         ></Button>
-        <Button href={KAKAO_AUTH_URL}>카카오톡으로 로그인 하기</Button>
+        <Button _onClick={kakaoAuth}>카카오톡으로 로그인 하기</Button>
         <Grid is_flex>
           <Grid margin="30px 0px 0px 110px">
             <Text margin="20px 0px 0px 0px" size="15px" color="black">

@@ -1,12 +1,11 @@
 import React from "react";
+import ReactDOM from "react-dom";
+
 import App from "./shared/App";
 
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/configureStore";
-
-import axios from "axios";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <Provider store={store}>
