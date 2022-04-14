@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { Grid, Text, Button, Image } from "../elements";
 import { useParams, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,17 +50,19 @@ const PostDetail = (props) => {
       <Text color="black" bold size="24px">
         상세페이지
       </Text>
-      <Grid is_flex width="auto">
-        <Text color="black" margin="16px" size="20px">
-          {post[0].nickName}
-        </Text>
+      <Wrap>
         <Grid is_flex width="auto">
-          <Text color="black">{post[0].category}</Text>
-          <Text color="black" margin="16px">
-            {post[0].createdAt}
+          <Text color="black" margin="16px" size="20px">
+            {post[0].nickName}
           </Text>
+          <Grid is_flex width="auto">
+            <Text color="black">{post[0].category}</Text>
+            <Text color="black" margin="16px">
+              {post[0].createdAt}
+            </Text>
+          </Grid>
         </Grid>
-      </Grid>
+
       <Grid>
         <Image shape="rectangle" src={post[0].imageUrl} />
       </Grid>
@@ -71,18 +74,19 @@ const PostDetail = (props) => {
         <CommentWrite post_id={props.postId} />
         <CommentList post_id={props.postId} />
       </Grid>
+
       <Grid center>
         <Button
-          margin="0px 2px"
+          margin="30px 2px"
           width="30%"
           text="게시글 수정"
           _onClick={() => {
-            history.push(`/PostModify/${props.Id}`);
+            history.push(`/PostModify/${Id}`);
           }}
         />
 
         <Button
-          margin="0px 2px"
+          margin="30px 2px"
           width="30%"
           text="게시글 삭제"
           _onClick={onRemove}
@@ -91,6 +95,13 @@ const PostDetail = (props) => {
     </>
   );
 };
+
+const Wrap = styled.div`
+  /* background-color: #219ebc; */
+  margin-top: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 5px 5px rgba(0, 0, 0, 0.7);
+`;
 
 PostDetail.defaultProps = {
   postId: "1",

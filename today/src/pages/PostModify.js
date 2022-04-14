@@ -10,23 +10,40 @@ const PostModify = (props) => {
 
   const params = useParams();
   console.log(params);
-  const Id = props.match.params.postid;
-  console.log(Id);
+  const postId = props.match.params.postid;
+  console.log(postId);
+  const is_edit = postId ? true : false;
+
   const post = useSelector((state) => state.post.list);
   console.log(post);
   console.log(post[0]);
 
+  //is_login 기능 구현 전 본인인지 확인하는 코드
+  // let _post = is_edit ? post.find((p) => p.id === Id) : null;
+  // console.log(_post);
+
+  // React.useEffect(() => {
+  //   if (is_edit && !_post) {
+  //     alert("포스트 정보가 없어요!");
+  //     history.push("/");
+  //     return;
+  //   }
+  //   if (is_edit) {
+  //     dispatch(actionCreators.setPreview(_post))
+  //   }
+  // });
+
+  const preview = useSelector((state) => state.image.preview);
+
   const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(actionCreators.getPostDB());
-  }, []);
 
   const [contents, setContents] = React.useState("");
   const [title, setTitle] = React.useState("");
+  console.log(title);
   const [completed, setCompleted] = React.useState(false);
   const [category, setCategory] = React.useState("React");
 
-  const changeColor = () => {
+  const changeChk = () => {
     setCompleted(!completed);
     console.log(completed);
   };
@@ -44,6 +61,7 @@ const PostModify = (props) => {
   };
 
   const fileInput = React.useRef();
+  const is_uploading = useSelector((state) => state.image.uploading);
 
   const selectFile = (e) => {
     const reader = new FileReader();
@@ -53,6 +71,36 @@ const PostModify = (props) => {
     reader.onloadend = () => {
       dispatch(actionCreators.setPreview(reader.result));
     };
+  };
+  // React.useEffect(() => {
+  //   let file = fileInput.current.files;
+  //   // if (title == "" || contents == "" || completed == "" || category == "") {
+  //   //   window.alert("게시물을 다 넣어주세요!");
+  //   //   return;
+  //   // }
+  //   dispatch(
+  //     actionCreators.editPost({
+  //       information: { title: title, content: contents, completed, category },
+  //       file,
+  //       postId,
+  //     })
+  //   );
+  // }, []);
+
+  const editPostDB = (e) => {
+    e.preventDefault();
+    let file = fileInput.current.files[0];
+    if (title == "" || contents == "" || category == "") {
+      window.alert("게시물을 다 넣어주세요!");
+      return;
+    }
+    dispatch(
+      actionCreators.editPostDB({
+        information: { title: title, content: contents, completed, category },
+        file,
+        postId,
+      })
+    );
   };
 
   return (
@@ -97,9 +145,11 @@ const PostModify = (props) => {
           // disabled={is_uploading}
         />
       </Grid>
-      <Grid padding="16px">
-        <Image shape="rectangle" src={post[0].imageUrl} />
-      </Grid>
+      <Image
+        src={preview && preview ? preview : post[0].imageUrl}
+        shape="rectangle"
+      />
+
       <Grid padding="16px">
         <Grid padding="16px">
           <Grid margin="10px">
@@ -107,19 +157,23 @@ const PostModify = (props) => {
               type="checkbox"
               name="completed"
               value="{color}"
-              onChange={changeColor}
+              onChange={changeChk}
             />
             해결 여부
           </Grid>
 
-          <InputStyle defaultValue={post[0].title} _onChange={changeTitle} />
+          <InputStyle defaultValue={post[0].title} onChange={changeTitle} />
           <TextStyle onChange={changeContents} defaultValue={post[0].content} />
         </Grid>
-        <Grid center></Grid>
       </Grid>
 
       <Grid center>
-        <Button text="수정 완료" margin="0px 2px" width="30%" />
+        <Button
+          text="수정 완료"
+          margin="0px 2px"
+          width="30%"
+          _onClick={editPostDB}
+        />
       </Grid>
     </>
   );

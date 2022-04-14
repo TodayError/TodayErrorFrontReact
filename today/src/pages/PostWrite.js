@@ -4,10 +4,8 @@ import styled from "styled-components";
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators } from "../redux/modules/post";
-import { useHistory } from "react-router-dom";
 
 const PostWrite = (props) => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const preview = useSelector((state) => state.image.preview);
   const [contents, setContents] = React.useState("");
@@ -15,7 +13,7 @@ const PostWrite = (props) => {
   const [completed, setCompleted] = React.useState(false);
   const [category, setCategory] = React.useState("React");
 
-  const changeColor = () => {
+  const changeChk = () => {
     setCompleted(!completed);
     console.log(completed);
   };
@@ -48,6 +46,10 @@ const PostWrite = (props) => {
   const uploadDB = (e) => {
     e.preventDefault();
     let file = fileInput.current.files[0];
+    if (title == "" || contents == "" || category == "") {
+      window.alert("게시물을 다 넣어주세요!");
+      return;
+    }
     dispatch(
       actionCreators.uploadDB({
         information: { title: title, content: contents, completed, category },
@@ -118,7 +120,7 @@ const PostWrite = (props) => {
             type="file"
             onChange={selectFile}
             ref={fileInput}
-            // disabled={is_uploading}
+            disabled={is_uploading}
           />
         </Grid>
 
@@ -133,7 +135,7 @@ const PostWrite = (props) => {
               type="checkbox"
               name="completed"
               value="{color}"
-              onChange={changeColor}
+              onChange={changeChk}
             />
             해결 여부
           </Grid>
