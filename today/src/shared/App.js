@@ -20,15 +20,18 @@ import PostDetail from "../pages/PostDetail";
 import KakaoAuthHandle from "../pages/KakaoAuthHandle";
 
 import { actionCreators as userActions } from "../redux/modules/user";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommentWrite from "../components/CommentWrite";
 import CommentItem from "../components/CommentItem";
 import CommentList from "../components/CommentList";
-import CommentTest from "../pages/CommentTest";
 
 function App() {
   const dispatch = useDispatch();
-
+  const is_login = useSelector((state) => state.user.is_login);
+  const username = useSelector((state) => state.user.user);
+  const post_list = useSelector((state) => state.post.list);
+  const nickName = post_list[0].nickName;
+  console.log(nickName);
   const is_token = localStorage.getItem("Authorization");
 
   React.useEffect(() => {
@@ -50,15 +53,17 @@ function App() {
           boxShadow="0 10px 5px 5px rgba(0,0,0,0.7)"
         >
           <ConnectedRouter history={history}>
-            <Route path="/" exact component={CommentTest} />
-            {/* <Route path="/" exact component={PostList} /> */}
+            <Route path="/" exact component={PostList} />
+
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
             <Route path="/PostWrite" exact component={PostWrite} />
-            <Route path="/PostDetail/:index" exact component={PostDetail} />
-            <Route path="/PostModify/:index" exact component={PostModify} />
+            <Route path="/PostWrite:postid" exact component={PostWrite} />
+            <Route path="/PostDetail/:postid" exact component={PostDetail} />
+            <Route path="/PostModify/:postid" exact component={PostModify} />
             <Route path="/user/kakao/callback" component={KakaoAuthHandle} />
           </ConnectedRouter>
+
           <Write
             onClick={() => {
               history.push("/PostWrite");
@@ -82,6 +87,8 @@ const Write = styled.button`
   border-radius: 50%;
   padding: 15px;
   font-size: 30px;
+  font: bold;
   cursor: pointer;
+  box-shadow: 0 10px 5px 5px rgba(0, 0, 0, 0.7);
 `;
 export default App;

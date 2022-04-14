@@ -8,6 +8,7 @@ import { history } from "../redux/configureStore";
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
+import { actionCreators } from "../redux/modules/post";
 
 const Header = (props) => {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const Header = (props) => {
               bold
               cursor="pointer"
               _onClick={() => {
-                history.push("/");
+                dispatch(actionCreators.getCateDB("Home"));
               }}
             >
               항해 통신
@@ -48,7 +49,7 @@ const Header = (props) => {
             textShadow="2px 2px 2px black"
             cursor="pointer"
             _onClick={() => {
-              history.push("/React");
+              dispatch(actionCreators.getCateDB("React"));
             }}
           >
             React
@@ -61,7 +62,7 @@ const Header = (props) => {
             textShadow="2px 2px 2px black"
             cursor="pointer"
             _onClick={() => {
-              history.push("/Spring");
+              dispatch(actionCreators.getCateDB("Spring"));
             }}
           >
             Spring
@@ -73,7 +74,7 @@ const Header = (props) => {
             textShadow="2px 2px 2px black"
             cursor="pointer"
             _onClick={() => {
-              history.push("/Node.js");
+              dispatch(actionCreators.getCateDB("Node.js"));
             }}
           >
             Node.js
@@ -132,7 +133,7 @@ const Header = (props) => {
             size="40px"
             bold
             _onClick={() => {
-              history.push("/");
+              dispatch(actionCreators.getCateDB("Home"));
             }}
             cursor="pointer"
           >
@@ -146,7 +147,7 @@ const Header = (props) => {
           cursor="pointer"
           textShadow="2px 2px 2px black"
           _onClick={() => {
-            history.push("/React");
+            dispatch(actionCreators.getCateDB("React"));
           }}
         >
           React
@@ -159,7 +160,7 @@ const Header = (props) => {
           textShadow="2px 2px 2px black"
           cursor="pointer"
           _onClick={() => {
-            history.push("/Spring");
+            dispatch(actionCreators.getCateDB("Spring"));
           }}
         >
           Spring
@@ -171,7 +172,7 @@ const Header = (props) => {
           textShadow="2px 2px 2px black"
           cursor="pointer"
           _onClick={() => {
-            history.push("/Node");
+            dispatch(actionCreators.getCateDB("Node.js"));
           }}
         >
           Node.js

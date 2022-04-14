@@ -1,26 +1,28 @@
 import React from "react";
 import { Grid, Image, Text, Button } from "../elements";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 const Post = (props) => {
   console.log(props);
   const history = useHistory();
   return (
     <>
-      <div
-        style={{ backgroundColor: "#ca6702", marginTop: "30px" }}
+      <Wrap
+        completed={props.completed}
         onClick={() => {
           history.push(`/PostDetail/${props.postid}`);
         }}
       >
         <Grid is_flex width="auto">
-          <Text bold color="black" margin="16px">
+          <Text bold color="black" margin="16px" size="20px">
             {props.title}
           </Text>
           <Grid is_flex width="auto">
             <Text bold color="black" margin="16px">
               {props.category}
             </Text>
+            <Text color="black">{props.nickName}</Text>
             <Text bold color="black" margin="16px">
               {props.createdAt}
             </Text>
@@ -29,10 +31,17 @@ const Post = (props) => {
         <Grid>
           <Image shape="rectangle" src={props.imageUrl} />
         </Grid>
-      </div>
+      </Wrap>
     </>
   );
 };
+
+const Wrap = styled.div`
+  background-color: ${(props) => (props.completed ? "#89c2d9" : "#118ab2")};
+  margin-top: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 5px 5px rgba(0, 0, 0, 0.7);
+`;
 
 Post.defaultProps = {
   nickname: "coooooodinnngg",

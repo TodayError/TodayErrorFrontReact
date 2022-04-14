@@ -78,12 +78,12 @@ const addCommentDB = (post_id, comment) => {
         postId: post_id,
         content: comment,
       });
-      
-      const comment_list = getState().comments
-      console.log("스테이트의 리스트보자", comment_list)
-      data.forEach((c)=>{
-        comment_list.push({is_edit: false, ...c.})
-      })
+
+      const comment_list = getState().comments;
+      console.log("스테이트의 리스트보자", comment_list);
+      data.forEach((c) => {
+        comment_list.push({ is_edit: false, ...c });
+      });
       dispatch(addComment(post_id, data));
 
       // //mock
