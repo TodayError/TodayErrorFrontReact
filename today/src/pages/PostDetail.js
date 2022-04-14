@@ -27,9 +27,6 @@ const PostDetail = (props) => {
 
   //코멘트 테스트 위해 추가함
   const is_login = useSelector((state) => state.user.is_login);
-  const post_id = useSelector((state) => state.post.list.postId);
-  console.log(post_id);
-  //
 
   const dispatch = useDispatch();
 
@@ -65,14 +62,19 @@ const PostDetail = (props) => {
             </Text>
           </Grid>
         </Grid>
-        <Grid>
-          <Image shape="rectangle" src={post[0].imageUrl} />
-        </Grid>
-        <Grid padding="16px">
-          <Text color="black">제목: {post[0].title}</Text>
-          <Text color="black">내용: {post[0].content}</Text>
-        </Grid>
-      </Wrap>{" "}
+
+      <Grid>
+        <Image shape="rectangle" src={post[0].imageUrl} />
+      </Grid>
+      <Grid padding="16px">
+        <Text color="black">제목: {post[0].title}</Text>
+        <Text color="black">내용: {post[0].content}</Text>
+      </Grid>
+      <Grid>
+        <CommentWrite post_id={props.postId} />
+        <CommentList post_id={props.postId} />
+      </Grid>
+
       <Grid center>
         <Button
           margin="30px 2px"

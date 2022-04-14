@@ -68,9 +68,9 @@ const loginDB = (id, pwd) => {
           dispatch(setUser(id));
           localStorage.setItem("username", id);
 
-          // axios.defaults.headers.common[
-          //   "Authorization"
-          // ] = `Bearer ${accessToken}`;
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${accessToken}`;
           // //요청할때 기본 모양새를 잡는 것 같은데..accessToken을 localStorage, cookie등에 저장하지 않는다!
           history.push("/");
         });

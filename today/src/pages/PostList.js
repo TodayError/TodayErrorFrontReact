@@ -15,7 +15,7 @@ const PostList = (props) => {
   return (
     <>
       {post_list.map((p, ix) => {
-        return <Post key={ix} {...p} ix={ix} />;
+        return <Post key={ix} {...p} ix={ix} post_id={p.postId} />;
       })}
     </>
   );

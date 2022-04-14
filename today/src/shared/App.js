@@ -53,6 +53,8 @@ function App() {
           boxShadow="0 10px 5px 5px rgba(0,0,0,0.7)"
         >
           <ConnectedRouter history={history}>
+
+            {/* <Route path="/" exact component={CommentTest} /> */}
             <Route path="/" exact component={PostList} />
 
             <Route path="/login" exact component={Login} />
