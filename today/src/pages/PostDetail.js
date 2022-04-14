@@ -4,6 +4,7 @@ import { Grid, Text, Button, Image } from "../elements";
 import { useParams, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators } from "../redux/modules/post";
+import { actionCreators as commentActions } from "../redux/modules/comment";
 
 import CommentList from "../components/CommentList";
 import CommentWrite from "../components/CommentWrite";
@@ -19,7 +20,7 @@ const PostDetail = (props) => {
   const Id = params.postId;
   console.log(Id);
   const post = useSelector((state) => state.post.list);
-  console.log(post);
+  console.log(post); //빈배열
   console.log(post[0]);
 
   // let post_idx = post.findIndex((p) => p.id === post_Id);

@@ -1,7 +1,6 @@
 import { createAction, handleActions } from "redux-actions";
 import { actionCreators as postActions } from "./post";
 import { produce } from "immer";
-import { RES } from "./response";
 
 import axios from "axios";
 import { apis } from "../../shared/apis";
@@ -15,16 +14,13 @@ const EDIT = "comment/EDIT";
 const SET_EDIT = "comment/SET_EDIT";
 
 //Action Creators
-const getComment = createAction(LOAD, (post_id, comments) => ({
-  post_id,
+const getComment = createAction(LOAD, (comments) => ({
   comments,
 }));
-const addComment = createAction(ADD, (post_id, comment) => ({
-  post_id,
+const addComment = createAction(ADD, (comment) => ({
   comment,
 }));
-const editComment = createAction(EDIT, (post_id, commentId, newContent) => ({
-  post_id,
+const editComment = createAction(EDIT, (commentId, newContent) => ({
   commentId,
   newContent,
 }));
@@ -46,21 +42,18 @@ const initialState = {
 
 //Middlewares
 
-const getCommentDB = (post_id = null) => {
+const getCommentDB = (post_id) => {
   return function (dispatch, getState, { history }) {
-    if (!post_id) {
-      return;
-    }
-
     try {
       apis.getComment(post_id).then((res) => {
         console.log("로드", res);
-        let commentList = res.data;
+        let commentList = res.data.body;
+        console.log(commentList);
         const comment_list = [];
         commentList.forEach((c) => {
           comment_list.push({ is_edit: false, ...c });
         });
-
+        console.log(comment_list);
         dispatch(getComment(comment_list));
       });
     } catch (err) {
@@ -76,36 +69,41 @@ const addCommentDB = (post_id, NewComment) => {
     try {
       apis.addComment(post_id, NewComment).then((res) => {
         console.log("추가", res);
-
-        const user = useSelector((state) => state.user.user);
         const data = res.data;
+        const _data = getState((state) => state.user.user);
         const __newComment = {
           commentId: data.commentId,
-          nickname: user,
-          comment: data.comment,
+          userName: _data.user.user,
+          comment: NewComment,
           createdAt: data.createdAt,
         };
 
-        dispatch(addComment(post_id, __newComment)); // newComment가 객체여야 unshift 가능함
+        dispatch(addComment(__newComment)); // newComment가 객체여야 unshift 가능함
       });
     } catch (err) {
       console.log(err);
-      window.alert("다시 시도해 주세요.");
+      window.alert("댓글 추가 실패, 다시 시도해 주세요.");
     }
   };
 };
 
-const editCommentDB = (post_id, commentId, newContent, setIsEdit) => {
+const editCommentDB = (commentId, comment, setIsEdit) => {
+  //post_id 삭제함!
   return function (dispatch, getState, { history }) {
-    console.log("댓글 수정한다!", post_id, commentId);
+    console.log("댓글 수정한다!", commentId);
     try {
-      apis.editComment(commentId, newContent).then((res) => {
+      apis.editComment(commentId, comment).then((res) => {
         console.log("추가", res);
-        setIsEdit(false);
-        console.log(res);
         const data = res.data;
-
-        dispatch(editComment(data.commentId, data.comment)); // 시간정보도 받아야 될것 같은데..?
+        const _data = getState((state) => state.user.user);
+        setIsEdit(false);
+        const __editComment = {
+          commentId: commentId,
+          nickname: _data.user.user,
+          comment: comment,
+          createdAt: data.modifiedAt,
+        };
+        dispatch(editComment(commentId, __editComment)); // 시간정보도 받아야 될것 같은데..?
       });
     } catch (err) {
       console.log(err);
@@ -114,8 +112,8 @@ const editCommentDB = (post_id, commentId, newContent, setIsEdit) => {
   };
 };
 
-const delCommentDB = (post_id, commentId) => (dispatch) => {
-  console.log("댓글 삭제한다!", post_id, commentId);
+const delCommentDB = (commentId) => (dispatch) => {
+  console.log("댓글 삭제한다!", commentId);
   try {
     apis.delComment(commentId).then((res) => {
       console.log(res);
@@ -171,34 +169,49 @@ export default handleActions(
   {
     [LOAD]: (state, action) =>
       produce(state, (draft) => {
-        // 댓글리스트를 매번 스토어에서 받아오는 것은 비효율적. 리덕스에 딕셔너리로 넣고 사용하자. let data = {[post_id]: com_list, ...}
-        //각각 게시글 방을 만들어준다고 생각
-        draft.comments[action.payload.post_id] = action.payload.comments;
-        // 콘솔찍기 위해 추가
-        const list = useSelector((state) => state.comment.comments);
-        console.log("코멘트 스테이트 확인", list);
+        console.log(action.payload);
+        draft.comments = [];
+        draft.comments.push(...action.payload.comments);
+
+        draft.comments = draft.comments.reduce((acc, cur) => {
+          if (acc.findIndex((a) => a.commentId === cur.commentId) === -1) {
+            return [...acc, cur];
+          } else {
+            acc[acc.findIndex((a) => a.commentId === cur.commentId)] = cur;
+            return acc;
+          }
+        }, []);
+        // console.log("리듀서 로드", draft.comments);
+        // // // 댓글리스트를 매번 스토어에서 받아오는 것은 비효율적. 리덕스에 딕셔너리로 넣고 사용하자. let data = {[post_id]: com_list, ...}
+        // //각각 게시글 방을 만들어준다고 생각
+        // draft.comments[action.payload.post_id] = action.payload.comments;
+        // // 콘솔찍기 위해 추가
       }),
 
     [ADD]: (state, action) =>
       produce(state, (draft) => {
-        draft.comments[action.payload.post_id].unshift(
-          action.payload.__newComment
-        );
+        console.log(action.payload);
+        draft.comments.unshift(action.payload.comment);
+
+        // console.log(draft.comments);
+        // draft.comment[action.payload.post_id].unshift(
+        //   action.payload.__newComment
+        // );
       }),
     [EDIT]: (state, action) =>
       produce(state, (draft) => {
+        console.log(action.payload);
         let idx = draft.comments.findIndex((c) => {
           return parseInt(c.commentId) === parseInt(action.payload.commentId);
         });
-
+        console.log("인덱스", idx);
         draft.comments[idx] = {
           ...draft.comments[idx],
-          comment: action.payload.NewComment,
+          comment: action.payload.newContent.comment,
         };
-
+        //------------------------------------------
         // console.log(action.payload); //post_id, commentId, newComment 확인해보기
         // const data = action.payload.newComment; //
-
         // draft.comments.map((comment, idx) => {
         //   if (comment.commentId === data.commentId) {
         //     return (draft.comments[idx] = data);
@@ -216,6 +229,7 @@ export default handleActions(
         const new_comment_list = draft.comments.filter((c) => {
           return parseInt(action.payload.commentId) !== c.commentId;
         });
+        console.log(new_comment_list);
         draft.comments = new_comment_list;
       }),
   },
