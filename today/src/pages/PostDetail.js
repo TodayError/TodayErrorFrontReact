@@ -7,6 +7,7 @@ import { actionCreators } from "../redux/modules/post";
 
 import CommentList from "../components/CommentList";
 import CommentWrite from "../components/CommentWrite";
+import Permit from "../shared/Permit";
 
 const PostDetail = (props) => {
   console.log(props);
@@ -15,7 +16,7 @@ const PostDetail = (props) => {
   const params = useParams();
 
   // console.log(params);
-  const Id = props.match.params.postid;
+  const Id = params.postId;
   console.log(Id);
   const post = useSelector((state) => state.post.list);
   console.log(post);
@@ -63,35 +64,39 @@ const PostDetail = (props) => {
           </Grid>
         </Grid>
 
+        <Grid>
+          <Image shape="rectangle" src={post[0].imageUrl} />
+        </Grid>
+        <Grid padding="16px">
+          <Text color="black">제목: {post[0].title}</Text>
+          <Text color="black">내용: {post[0].content}</Text>
+        </Grid>
+      </Wrap>
       <Grid>
-        <Image shape="rectangle" src={post[0].imageUrl} />
+        <Permit>
+          <CommentWrite post_id={Id} />
+        </Permit>
+        <CommentList post_id={Id} />
       </Grid>
-      <Grid padding="16px">
-        <Text color="black">제목: {post[0].title}</Text>
-        <Text color="black">내용: {post[0].content}</Text>
-      </Grid>
-      <Grid>
-        <CommentWrite post_id={props.postId} />
-        <CommentList post_id={props.postId} />
-      </Grid>
+      <Permit>
+        <Grid center>
+          <Button
+            margin="30px 2px"
+            width="30%"
+            text="게시글 수정"
+            _onClick={() => {
+              history.push(`/PostModify/${Id}`);
+            }}
+          />
 
-      <Grid center>
-        <Button
-          margin="30px 2px"
-          width="30%"
-          text="게시글 수정"
-          _onClick={() => {
-            history.push(`/PostModify/${Id}`);
-          }}
-        />
-
-        <Button
-          margin="30px 2px"
-          width="30%"
-          text="게시글 삭제"
-          _onClick={onRemove}
-        />
-      </Grid>
+          <Button
+            margin="30px 2px"
+            width="30%"
+            text="게시글 삭제"
+            _onClick={onRemove}
+          />
+        </Grid>
+      </Permit>
     </>
   );
 };

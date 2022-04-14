@@ -28,10 +28,6 @@ import CommentList from "../components/CommentList";
 function App() {
   const dispatch = useDispatch();
   const is_login = useSelector((state) => state.user.is_login);
-  const username = useSelector((state) => state.user.user);
-  const post_list = useSelector((state) => state.post.list);
-  const nickName = post_list[0].nickName;
-  console.log(nickName);
   const is_token = localStorage.getItem("Authorization");
 
   React.useEffect(() => {
@@ -53,26 +49,27 @@ function App() {
           boxShadow="0 10px 5px 5px rgba(0,0,0,0.7)"
         >
           <ConnectedRouter history={history}>
-
             {/* <Route path="/" exact component={CommentTest} /> */}
             <Route path="/" exact component={PostList} />
-
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
             <Route path="/PostWrite" exact component={PostWrite} />
-            <Route path="/PostWrite:postid" exact component={PostWrite} />
-            <Route path="/PostDetail/:postid" exact component={PostDetail} />
-            <Route path="/PostModify/:postid" exact component={PostModify} />
+            <Route path="/PostDetail/:postId" exact component={PostDetail} />
+            <Route path="/PostModify/:postId" exact component={PostModify} />
             <Route path="/user/kakao/callback" component={KakaoAuthHandle} />
           </ConnectedRouter>
 
-          <Write
-            onClick={() => {
-              history.push("/PostWrite");
-            }}
-          >
-            +
-          </Write>
+          {is_login && is_token ? (
+            <Write
+              onClick={() => {
+                history.push("/PostWrite");
+              }}
+            >
+              +
+            </Write>
+          ) : (
+            ""
+          )}
         </Grid>
       </Layout>
     </div>

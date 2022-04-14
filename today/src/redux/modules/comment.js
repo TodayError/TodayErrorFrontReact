@@ -4,6 +4,8 @@ import { produce } from "immer";
 import { RES } from "./response";
 
 import axios from "axios";
+import { apis } from "../../shared/apis";
+import { useSelector } from "react-redux";
 
 //Action
 const ADD = "comment/ADD";
@@ -21,10 +23,10 @@ const addComment = createAction(ADD, (post_id, comment) => ({
   post_id,
   comment,
 }));
-const editComment = createAction(EDIT, (post_id, commentId, newComment) => ({
+const editComment = createAction(EDIT, (post_id, commentId, newContent) => ({
   post_id,
   commentId,
-  newComment,
+  newContent,
 }));
 const delComment = createAction(DELETE, (commentId) => ({ commentId }));
 
@@ -51,18 +53,16 @@ const getCommentDB = (post_id = null) => {
     }
 
     try {
-      // const { data } = axios
-      //   .get(`http://3.38.116.203/comment/${post_id}`)
-      //   .then((res) => {
-      //     console.log(res);
-      //     let comments = res.data;
-      //     dispatch(getComment(post_id, comments));
-      //   });
+      apis.getComment(post_id).then((res) => {
+        console.log("로드", res);
+        let commentList = res.data;
+        const comment_list = [];
+        commentList.forEach((c) => {
+          comment_list.push({ is_edit: false, ...c });
+        });
 
-      //mockApi
-      const comments = RES[post_id].comments;
-      dispatch(getComment(post_id, comments));
-      //mockApi
+        dispatch(getComment(comment_list));
+      });
     } catch (err) {
       console.log(err);
       window.alert("댓글정보를 가져올 수 없습니다.");
@@ -70,39 +70,24 @@ const getCommentDB = (post_id = null) => {
   };
 };
 
-const addCommentDB = (post_id, comment) => {
+const addCommentDB = (post_id, NewComment) => {
   return function (dispatch, getState, { history }) {
-    console.log("댓글추가한다!", post_id, comment);
+    console.log("댓글추가한다!", post_id, NewComment);
     try {
-      const { data } = axios.post("http://3.38.116.203/comment", {
-        postId: post_id,
-        content: comment,
+      apis.addComment(post_id, NewComment).then((res) => {
+        console.log("추가", res);
+
+        const user = useSelector((state) => state.user.user);
+        const data = res.data;
+        const __newComment = {
+          commentId: data.commentId,
+          nickname: user,
+          comment: data.comment,
+          createdAt: data.createdAt,
+        };
+
+        dispatch(addComment(post_id, __newComment)); // newComment가 객체여야 unshift 가능함
       });
-
-      const comment_list = getState().comments;
-      console.log("스테이트의 리스트보자", comment_list);
-      data.forEach((c) => {
-        comment_list.push({ is_edit: false, ...c });
-      });
-      dispatch(addComment(post_id, data));
-
-      // //mock
-      // const username = getState().user.user;
-      // const comment_list = RES[post_id].comments;
-      // const NewComment = {
-      //   comnentId: 111,
-      //   nickname: username,
-      //   comment: comment,
-      //   createdAt: "22-04-13",
-      //   is_edit: false,
-      // };
-
-      // console.log(NewComment);
-      // comment_list.unshift(NewComment);
-      // console.log(comment_list); //추가는 되고 있는데.. 왜 unshift를 못읽는다고 구래?
-
-      // dispatch(addComment(post_id, NewComment));
-      // //mock
     } catch (err) {
       console.log(err);
       window.alert("다시 시도해 주세요.");
@@ -110,21 +95,18 @@ const addCommentDB = (post_id, comment) => {
   };
 };
 
-const editCommentDB = (post_id, commentId, newComment, setIsEdit) => {
+const editCommentDB = (post_id, commentId, newContent, setIsEdit) => {
   return function (dispatch, getState, { history }) {
     console.log("댓글 수정한다!", post_id, commentId);
     try {
-      axios
-        .post(`http://3.38.116.203/comment/${commentId}`, {
-          content: newComment,
-        })
-        .then((res) => {
-          setIsEdit(false);
-          console.log(res);
-          const data = res.data;
+      apis.editComment(commentId, newContent).then((res) => {
+        console.log("추가", res);
+        setIsEdit(false);
+        console.log(res);
+        const data = res.data;
 
-          dispatch(editComment(post_id, commentId, newComment));
-        });
+        dispatch(editComment(data.commentId, data.comment)); // 시간정보도 받아야 될것 같은데..?
+      });
     } catch (err) {
       console.log(err);
       window.alert("다시 시도해 주세요.");
@@ -135,13 +117,12 @@ const editCommentDB = (post_id, commentId, newComment, setIsEdit) => {
 const delCommentDB = (post_id, commentId) => (dispatch) => {
   console.log("댓글 삭제한다!", post_id, commentId);
   try {
-    axios.delete(`http://3.38.116.203/comment/${commentId}`).then((res) => {
+    apis.delComment(commentId).then((res) => {
       console.log(res);
       dispatch(delComment(commentId));
     });
   } catch (err) {
     console.log(err);
-    window.alert("다시 시도해 주세요.");
   }
 };
 // //   const post = getState().post.list.find((l) => l.id === postId);
@@ -193,11 +174,16 @@ export default handleActions(
         // 댓글리스트를 매번 스토어에서 받아오는 것은 비효율적. 리덕스에 딕셔너리로 넣고 사용하자. let data = {[post_id]: com_list, ...}
         //각각 게시글 방을 만들어준다고 생각
         draft.comments[action.payload.post_id] = action.payload.comments;
+        // 콘솔찍기 위해 추가
+        const list = useSelector((state) => state.comment.comments);
+        console.log("코멘트 스테이트 확인", list);
       }),
 
     [ADD]: (state, action) =>
       produce(state, (draft) => {
-        draft.comments[action.payload.post_id].unshift(action.payload.comment);
+        draft.comments[action.payload.post_id].unshift(
+          action.payload.__newComment
+        );
       }),
     [EDIT]: (state, action) =>
       produce(state, (draft) => {

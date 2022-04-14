@@ -11,7 +11,7 @@ const Post = (props) => {
       <Wrap
         completed={props.completed}
         onClick={() => {
-          history.push(`/PostDetail/${props.postid}`);
+          history.push(`/PostDetail/${props.postId}`);
         }}
       >
         <Grid is_flex width="auto">
