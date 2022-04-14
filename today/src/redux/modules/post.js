@@ -80,7 +80,7 @@ const getDetailDB = (Id) => {
     try {
       const { data } = await apis.getDetail(Id);
       console.log(data.body);
-      let detail_data = [{ ...data.body }];
+      let detail_data = [{ ...data.body, postId: Id }];
       dispatch(getDetail(detail_data));
     } catch (error) {
       alert("상세페이지 실패");
@@ -164,11 +164,12 @@ const editPostDB = (payload) => {
     const imgUrl = postInfo[0].imageUrl;
     console.log(imgUrl);
 
-    const _post_idx = getState().post.list.findIndex(
-      (p) => p.postId + "" === payload.postId
-    );
+    const _post_idx = getState().post.list;
+    // .findIndex(
+    //   (p) => p.postId + "" === payload.postId
+    // );
     console.log(_post_idx);
-    const _post = getState().post.list[_post_idx];
+    const _post = getState().post.list;
     console.log(_post);
 
     if (imgUrl === _post.imageUrl) {
@@ -251,10 +252,11 @@ const deletePostDB = (postId) => {
         return parseInt(p.postId) === parseInt(postId);
       });
       dispatch(deletePost(post_index));
-      window.alert("포스트 삭제 ...");
+      window.alert("포스트 삭제 !!");
       window.location.href = "/";
     } catch {
       window.alert("포스트 삭제 성공 !!!");
+      window.location.href = "/";
     }
   };
 };
