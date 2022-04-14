@@ -7,6 +7,9 @@ import { actionCreators } from "../redux/modules/post";
 
 const PostWrite = (props) => {
   const dispatch = useDispatch();
+  const data = useSelector((state) => state);
+  console.log(data);
+
   const preview = useSelector((state) => state.image.preview);
   const [contents, setContents] = React.useState("");
   const [title, setTitle] = React.useState("");

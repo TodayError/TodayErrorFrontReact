@@ -2,6 +2,7 @@ import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
+import { apis } from "../../shared/apis";
 
 // actions
 const LOG_OUT = "LOG_OUT";

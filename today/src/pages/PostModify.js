@@ -10,7 +10,7 @@ const PostModify = (props) => {
 
   const params = useParams();
   console.log(params);
-  const postId = props.match.params.postid;
+  const postId = params.postId;
   console.log(postId);
   const is_edit = postId ? true : false;
 

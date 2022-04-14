@@ -1,6 +1,7 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
+import { apis } from "../../shared/apis";
 import { history } from "../configureStore";
 
 const SET_POST = "SET_POST";
@@ -27,7 +28,7 @@ const initialState = {
 };
 
 const initialPost = {
-  preview: null,
+  preview: "",
   postId: 1,
   nickname: "coooooodinnngg",
   title: "확장자명을 안적어서 생긴 오류입니다.",
@@ -57,7 +58,7 @@ const getCateDB = (categoryId) => {
   return async function (dispatch, getState, { history }) {
     try {
       const { data } = await axios.get(
-        `http://54.180.105.154/api/main/category/${categoryId}`
+        `http://3.38.116.203/api/main/category/${categoryId}`
       );
       console.log(data);
       const body_list = data.body;
@@ -72,14 +73,12 @@ const getCateDB = (categoryId) => {
   };
 };
 
-const getDetailDB = (postId) => {
-  console.log(postId);
+const getDetailDB = (Id) => {
+  console.log(Id);
 
   return async function (dispatch, getState, { history }) {
     try {
-      const { data } = await axios.get(
-        `http://3.38.116.203/api/details/${postId}`
-      );
+      const { data } = await apis.getDetail(Id);
       console.log(data.body);
       let detail_data = [{ ...data.body }];
       dispatch(getDetail(detail_data));
@@ -113,6 +112,7 @@ const getDetailDB = (postId) => {
 const uploadDB = (payload) => {
   console.log(payload);
   return async function (dispatch, getState, { history }) {
+    const ACCESS_TOKEN = localStorage.getItem("Authorization");
     console.log(payload.file, payload.information);
     const formData = new FormData();
     formData.append("file", payload.file);
@@ -129,6 +129,7 @@ const uploadDB = (payload) => {
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `${ACCESS_TOKEN}`,
       },
     })
       .then((response) => {
@@ -147,6 +148,10 @@ const uploadDB = (payload) => {
 
 const editPostDB = (payload) => {
   return async function (dispatch, getState, { history }) {
+    const ACCESS_TOKEN = localStorage.getItem("Authorization");
+
+    console.log(payload);
+
     console.log(payload.information);
     console.log(payload.file);
     console.log(payload.postId);
@@ -154,8 +159,10 @@ const editPostDB = (payload) => {
     //   console.log("게시글 정보가 없어요");
     //   return;
     // }
-    const _image = getState().post.list.imageUrl;
-    console.log(_image);
+    const postInfo = getState().post.list;
+    console.log(postInfo);
+    const imgUrl = postInfo[0].imageUrl;
+    console.log(imgUrl);
 
     const _post_idx = getState().post.list.findIndex(
       (p) => p.postId + "" === payload.postId
@@ -164,7 +171,7 @@ const editPostDB = (payload) => {
     const _post = getState().post.list[_post_idx];
     console.log(_post);
 
-    if (_image === _post.imageUrl) {
+    if (imgUrl === _post.imageUrl) {
       const formData = new FormData();
       formData.append(
         "information",
@@ -174,10 +181,11 @@ const editPostDB = (payload) => {
       );
       await axios({
         method: "put",
-        url: `http://54.180.105.154/api/posts/${payload.postId}`,
+        url: `http://3.38.116.203/api/posts/${payload.postId}`,
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `${ACCESS_TOKEN}`,
         },
       })
         .then((response) => {
@@ -193,7 +201,7 @@ const editPostDB = (payload) => {
         .catch((err) => {
           window.alert("수정오류!");
         });
-    } else if (_image !== _post.imageUrl) {
+    } else if (imgUrl !== _post.imageUrl) {
       const formData = new FormData();
       formData.append("file", payload.file);
       formData.append(
@@ -205,10 +213,11 @@ const editPostDB = (payload) => {
 
       await axios({
         method: "put",
-        url: `http://54.180.105.154/api/posts/${payload.postId}`,
+        url: `http://3.38.116.203/api/posts/${payload.postId}`,
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `${ACCESS_TOKEN}`,
         },
       })
         .then((response) => {
@@ -235,9 +244,7 @@ const editPostDB = (payload) => {
 const deletePostDB = (postId) => {
   return async function (dispatch, getState, { history }) {
     try {
-      const data = await axios.delete(
-        `http://3.38.116.203/api/posts/${postId}`
-      );
+      const data = await apis.delete(postId);
       const _post = getState().post.list;
       console.log(_post);
       const post_index = _post.findIndex((p) => {

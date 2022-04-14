@@ -9,29 +9,27 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(function (config) {
-  const accessToken = localStorage.Athorization;
-  config.headers.common["Athorization"] = `${accessToken}`;
+  const accessToken = localStorage.Authorization;
+  config.headers.common["Authorization"] = `${accessToken}`;
   return config;
 });
 
 export const apis = {
   // post
-  add: (contents) => api.post("/api/articles", contents),
-  edit: (id, contents) => api.put(`api/articles/${id}`, contents),
-  del: (id) => api.delete(`api/articles/${id}`),
-  articles: () => api.get("/api/articles"),
-  article: (id) => api.get(`/api/articles/${id}`),
-  search: (value) => api.get(`/api/articles/search?query=${value}`),
+  // add: (contents) => api.post("/api/articles", contents),
+  // edit: (id, contents) => api.put(`api/articles/${id}`, contents),
+  delete: (Id) => api.delete(`/api/posts/${Id}`),
+  getDetail: (Id) => api.get(`/api/details/${Id}`),
 
   // comment
-  addComment: (post_id, comment) =>
-    api.post("/comment", { post_id: post_id, comment: comment }),
-  comments: (id) => api.get(`/api/articles/${id}/comments`),
-  delComment: (id, coId) => api.delete(`/api/articles/${id}/comments/${coId}`),
-  editComment: (id, coId, content) =>
-    api.put(`/api/articles/${id}/comments/${coId}`, { content }),
+  addComment: (post_id, NewComment) =>
+    api.post("/api/comment", { postId: post_id, comment: NewComment }),
+  getComment: (post_id) => api.get(`/api/comment/${post_id}`),
+  delComment: (commentId) => api.delete(`/api/comment/${commentId}`),
+  editComment: (commentId, newContent) =>
+    api.put(`/api/comment/${commentId}`, { newContent }),
 
   // user
   login: (id, pwd) => api.post("/user/login", { nickname: id, password: pwd }),
-  userinfo: () => api.get(`/userinfo`),
+  // userinfo: () => api.get(`/userinfo`),
 };
