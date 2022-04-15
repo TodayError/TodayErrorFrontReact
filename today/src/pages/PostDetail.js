@@ -22,6 +22,7 @@ const PostDetail = (props) => {
   const post = useSelector((state) => state.post.list);
   console.log(post); //빈배열
   console.log(post[0]);
+  const username = useSelector((state) => state.user.user); // state.user => {user: ~, is_login: false}
 
   // let post_idx = post.findIndex((p) => p.id === post_Id);
   // // const post = post_list[post_idx];
@@ -60,7 +61,7 @@ const PostDetail = (props) => {
           <Grid is_flex width="auto">
             <Text color="black">{post[0].category}</Text>
             <Text color="black" margin="16px">
-              {post[0].createdAt}
+              {post[0].modifiedAt}
             </Text>
           </Grid>
         </Grid>
@@ -79,25 +80,29 @@ const PostDetail = (props) => {
         </Permit>
         <CommentList post_id={Id} />
       </Grid>
-      <Permit>
-        <Grid center>
-          <Button
-            margin="30px 2px"
-            width="30%"
-            text="게시글 수정"
-            _onClick={() => {
-              history.push(`/PostModify/${Id}`);
-            }}
-          />
+      <Grid center>
+        {is_login && username === post[0].nickName ? (
+          <>
+            <Button
+              margin="30px 2px"
+              width="30%"
+              text="게시글 수정"
+              _onClick={() => {
+                history.push(`/PostModify/${Id}`);
+              }}
+            />
 
-          <Button
-            margin="30px 2px"
-            width="30%"
-            text="게시글 삭제"
-            _onClick={onRemove}
-          />
-        </Grid>
-      </Permit>
+            <Button
+              margin="30px 2px"
+              width="30%"
+              text="게시글 삭제"
+              _onClick={onRemove}
+            />
+          </>
+        ) : (
+          ""
+        )}
+      </Grid>
     </>
   );
 };

@@ -76,6 +76,7 @@ const loginDB = (id, pwd) => {
           history.push("/");
         });
     } catch (err) {
+      window.alert("로그인이 실패했습니다. 다시 시도해주세요.");
       console.log("로그인이 실패했습니다.");
       console.log(err);
     }

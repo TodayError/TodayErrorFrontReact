@@ -60,6 +60,7 @@ const getCateDB = (categoryId) => {
       const { data } = await axios.get(
         `http://3.38.116.203/api/main/category/${categoryId}`
       );
+      history.replace("/");
       console.log(data);
       const body_list = data.body;
       if (categoryId == "Home") {
@@ -253,10 +254,9 @@ const deletePostDB = (postId) => {
         return parseInt(p.postId) === parseInt(postId);
       });
       dispatch(deletePost(post_index));
-      window.alert("포스트 삭제 !!");
       window.location.href = "/";
-    } catch {
-      window.alert("포스트 삭제 성공 !!!");
+    } catch (err) {
+      console.log(err);
       window.location.href = "/";
     }
   };
