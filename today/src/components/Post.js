@@ -24,7 +24,7 @@ const Post = (props) => {
             </Text>
             <Text color="black">{props.nickName}</Text>
             <Text bold color="black" margin="16px">
-              {props.createdAt}
+              {props.modifiedAt}
             </Text>
           </Grid>
         </Grid>
@@ -36,8 +36,9 @@ const Post = (props) => {
   );
 };
 
-const Wrap = styled.div`
-  background-color: ${(props) => (props.completed ? "#89c2d9" : "#118ab2")};
+const Wrap = styled.div` 
+  border: ${(props) => (props.completed ? "5px solid #89c2d9" : #orange")};
+  background-color: white;
   margin-top: 30px;
   border-radius: 10px;
   box-shadow: 0 10px 5px 5px rgba(0, 0, 0, 0.7);

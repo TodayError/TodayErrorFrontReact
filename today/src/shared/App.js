@@ -83,7 +83,9 @@ const Write = styled.button`
   background-color: #adb5bd;
   color: black;
   border-color: transparent;
-  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  border-radius: 75px;
   padding: 15px;
   font-size: 30px;
   font: bold;

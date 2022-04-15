@@ -11,16 +11,22 @@ const Signup = (props) => {
   const [id, setId] = React.useState("");
   const [pwd, setPwd] = React.useState("");
   const [pwd_check, setPwdCheck] = React.useState("");
+  const [id_check, setIdCheck] = React.useState(false);
 
   const dupCheck = (id) => {
     if (!nicknameCheck(id)) {
       window.alert("닉네임이 형식에 맞지 않습니다. 한글/숫자 포함 3-10자");
       return;
     }
+    setIdCheck(true);
     dispatch(userActions.dupCheckIdDB(id));
   };
 
   const signup = () => {
+    if (id_check === false) {
+      window.alert("닉네임 중복확인을 해주세요!");
+    }
+
     if (id === "" || pwd === "") {
       window.alert("닉네임, 패스워드를 모두 입력해주세요!");
       return;
