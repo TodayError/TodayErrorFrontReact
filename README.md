@@ -14,7 +14,6 @@
   
 [<img src="https://img.shields.io/badge/Github-181717?style=flat-square&logo=Github&logoColor=white">](https://github.com/GYMMX)
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white"/> 
-<img src="https://img.shields.io/badge/PhotoShop-31A8FF?style=flat-square&logo=AdobePhotoshop&logoColor=white"/>
 </p>
 
 **김혜리**
