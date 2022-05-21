@@ -1,11 +1,11 @@
-# Today Error(Back-End)
+# Today Error(Front-End)
 <img src="https://user-images.githubusercontent.com/98294357/164405876-6fce0b10-d224-4297-a91a-9de6218cec24.png" width="350">
 
 >**개발 중 만났던 Error 잘 정리하고 계신가요?  
 >Error를 올리고 좋은 해결 방법을 공유해요!!**
 
 - [\[시연영상 구경하기\]](https://www.youtube.com/watch?v=FSioCT4Zne4&t=3s) 
-- [\[Front-End Repository\]](https://github.com/TodayError/TodayErrorFrontReact)
+- [\[Back-End Repository\]]https://github.com/TodayError/TodayErrorBackSpring
   
 ## 👥 Member H3
 
