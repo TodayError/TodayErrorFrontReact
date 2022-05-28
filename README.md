@@ -7,7 +7,7 @@
 - [\[시연영상 구경하기\]](https://www.youtube.com/watch?v=FSioCT4Zne4&t=3s) 
 - [\[Back-End Repository\]]https://github.com/TodayError/TodayErrorBackSpring
   
-## 👥 Member H3
+## 👥 Member
 
 **김가경**
 <p>
